@@ -2,7 +2,9 @@ package main.TipusAscensor.ascensors;
 
 import main.Models.Ascensor;
 import main.Models.Passatger;
+import main.Models.Rellotge;
 import main.TipusAscensor.TipusAscensor;
+import main.vistes.GUI.Simulacio;
 
 public class Lineal extends TipusAscensor {
 
@@ -22,14 +24,18 @@ public class Lineal extends TipusAscensor {
     @Override
     public void act() {
         if (!ascensor.getEdifici().totsElsPassatgersHanArribat()
-                && (ascensor.getEdifici().getTotalPersonesEsperant() != 0 || ascensor.getNumPassatgersAscensor() != 0)) {
-            ascensor.setEnMoviment(false);
+                && (ascensor.getEdifici().getTotalPersonesEsperant() != 0
+                || ascensor.getNumPassatgersAscensor() != 0)) {
 
+            ascensor.setEnMoviment(false);
             ascensor.baixaPassatgersQueHanArribat();
 
             if (!ascensor.estaPle()) {
                 int i = 0;
-                while (!ascensor.estaPle() && i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
+                while (!ascensor.estaPle() &&
+                        i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual()) &&
+                        comprovaHora(ascensor.getEdifici()
+                                .getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i).getHoraEntrada())) {
                     Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
                     if (p != null) p.potPujarAlAscensor(ascensor);
                     ++i;

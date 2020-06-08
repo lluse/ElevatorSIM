@@ -36,8 +36,24 @@ public class MainController {
     public void start_simulation(int numPisos, int numAscensors, int numPersones, ArrayList<String> tipusAscensors) {
         crearEdifici(numPisos, numAscensors, numPersones, tipusAscensors);
 
-        ProcesAscensor ascensor1 = new ProcesAscensor();
-
+        ProcesAscensor ascensor1 = new ProcesAscensor("Ascensor 1",
+                getEdifici(), getEdifici().getAscensor1List().get(0));
+        ascensor1.start();
+        if (numAscensors > 1) {
+            ProcesAscensor ascensor2 = new ProcesAscensor("Ascensor 2",
+                    getEdifici(), getEdifici().getAscensor1List().get(1));
+            ascensor2.start();
+            if (numAscensors > 2) {
+                ProcesAscensor ascensor3 = new ProcesAscensor("Ascensor 3",
+                        getEdifici(), getEdifici().getAscensor1List().get(2));
+                ascensor3.start();
+                if (numAscensors > 3) {
+                    ProcesAscensor ascensor4 = new ProcesAscensor("Ascensor 4",
+                            getEdifici(), getEdifici().getAscensor1List().get(3));
+                    ascensor4.start();
+                }
+            }
+        }
     }
 
     private void crearEdifici(int numPisos, int numAscensors, int numPersones, ArrayList<String> tipusAscensors) {
@@ -67,7 +83,12 @@ public class MainController {
         });
 
         Edifici edifici = new Edifici(numPisos, ascensors, passatgers);
-        setEdifici(edifici);
+        getInstance().setEdifici(edifici);
+        for (Ascensor ascensor : ascensors) {
+            ascensor.setEdifici(edifici);
+            Edifici ed = ascensor.getEdifici();
+        }
+
     }
 
     private LinkedList<Passatger> crearPassatgers(int numPersones) {

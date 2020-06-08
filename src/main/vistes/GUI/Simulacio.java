@@ -44,7 +44,7 @@ public class Simulacio {
         afegirImatgesAscensor();
         afegirTipusAscensor();
         executar.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/icons_play.png")));
-        rellotgeDinamic = new RellotgeDinamic(8,25,0);
+        rellotgeDinamic = new RellotgeDinamic(8,30,0);
         lblRellotge.setText(rellotgeDinamic.toString());
         executar.addActionListener(new ActionListener() {
             @Override
@@ -56,6 +56,7 @@ public class Simulacio {
 
     private void start_simulation() {
         //rellotgeDinamic.getHl().start();
+        executar.setEnabled(false);
         iniciarRellotgeActual();
 
         MainController.getInstance().start_simulation(ConfiguracioModel.getNum_plantes_final(),

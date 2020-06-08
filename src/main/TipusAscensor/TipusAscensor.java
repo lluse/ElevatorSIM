@@ -2,6 +2,8 @@ package main.TipusAscensor;
 
 import main.Models.Ascensor;
 import main.Models.Passatger;
+import main.Models.Rellotge;
+import main.vistes.GUI.Simulacio;
 
 public abstract class TipusAscensor {
 
@@ -41,4 +43,11 @@ public abstract class TipusAscensor {
     public abstract void baixaPassatger(Passatger passatger);
 
     public abstract void activarMoviment();
+
+    protected boolean comprovaHora(Rellotge horaEntrada) {
+        if (horaEntrada.getHora() <= Simulacio.rellotgeDinamic.getHora()) {
+            if (horaEntrada.getMinuts() <= Simulacio.rellotgeDinamic.getMinuts()) return true;
+        }
+        return false;
+    }
 }

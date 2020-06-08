@@ -2,6 +2,7 @@ package main.TipusAscensor.ascensors;
 
 import main.Models.Ascensor;
 import main.Models.Passatger;
+import main.Models.Rellotge;
 import main.TipusAscensor.TipusAscensor;
 
 public class Parell extends TipusAscensor {
@@ -29,7 +30,10 @@ public class Parell extends TipusAscensor {
 
             if (!ascensor.estaPle()) {
                 int i = 0;
-                while (!ascensor.estaPle() && i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
+                while (!ascensor.estaPle() &&
+                        i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual()) &&
+                        comprovaHora(ascensor.getEdifici()
+                                .getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i).getHoraEntrada())) {
                     if (ascensor.getPassatgers().get(i).getPisDesitjat() % 2 == 0) { //Comprovem que va a un pis parell
                         Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
                         if (p != null) p.potPujarAlAscensor(ascensor);
@@ -50,6 +54,7 @@ public class Parell extends TipusAscensor {
             ascensor.setEnMoviment(false);
         }
     }
+
 
     @Override
     public boolean pujaPassatger(Passatger passatger) {

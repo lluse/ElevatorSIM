@@ -84,7 +84,7 @@ public class Passatger {
     }
 
     public boolean estaAlAscensor() {
-        return ascensor == null;
+        return ascensor != null;
     }
 
     public boolean estaEsperantAlPis(int pis) {

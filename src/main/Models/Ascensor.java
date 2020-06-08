@@ -34,7 +34,7 @@ public class Ascensor {
     public Ascensor(TipusAscensor tipus) {
         this.controller = MainController.getInstance();
         this.tipus = tipus;
-        edifici = controller.getEdifici();
+        edifici = controller.getInstance().getEdifici();
         this.tipus = tipus; //tipus de l'ascensor
         this.tipus.setAscensor(this);
         this.pisActual = 0;
