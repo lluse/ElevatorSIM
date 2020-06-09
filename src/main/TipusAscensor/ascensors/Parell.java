@@ -24,7 +24,6 @@ public class Parell extends TipusAscensor {
     public void act() {
         if (!ascensor.getEdifici().totsElsPassatgersHanArribat()
                 && (ascensor.getEdifici().getTotalPersonesEsperant() != 0 || ascensor.getNumPassatgersAscensor() != 0)) {
-            ascensor.setEnMoviment(false);
 
             ascensor.baixaPassatgersQueHanArribat();
 
@@ -51,7 +50,6 @@ public class Parell extends TipusAscensor {
 
             if (ascensor.getTempsAturatTotal() >= ascensor.getTempsParada()) ascensor.activarMoviment();
         } else {
-            ascensor.setEnMoviment(false);
         }
     }
 

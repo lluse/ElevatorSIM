@@ -1,8 +1,14 @@
 package main.Models;
 
 import main.Controller.MainController;
+import main.ObservadorAscensor.Observador;
+import main.ObservadorAscensor.SubjecteObservable;
 
-public class Passatger {
+import java.util.ArrayList;
+
+public class Passatger implements SubjecteObservable {
+
+    private ArrayList<Observador> observadors;
 
     protected MainController controller;
 
@@ -17,13 +23,12 @@ public class Passatger {
 
 
     public Passatger(int pisActual, int pisDesitjat, Rellotge horaEntrada) {
+        observadors = new ArrayList<>();
         controller = MainController.getInstance();
+
         this.pisActual = pisActual;
         this.pisDesitjat = pisDesitjat;
         this.horaEntrada = horaEntrada;
-
-        tempsEspera = 0;
-        tempsViatge = 0;
 
         ascensor = null;
         resetTime();
@@ -63,6 +68,10 @@ public class Passatger {
 
     public long getTempsViatge() {
         return tempsViatge/1000;
+    }
+
+    public void afegirTempsEnViatge(long temps) {
+        tempsViatge += temps;
     }
 
     public void resetTime() {
@@ -105,5 +114,20 @@ public class Passatger {
         }
         else if (getTime() > 60) return 2;
         else return 1;
+    }
+
+    public void cridarAscensor() {
+        cridar();
+    }
+
+    public void enllasarObservador(Observador o) {observadors.add(o);}
+
+    @Override
+    public void cridar() {
+        for (Observador o : observadors) {
+            if (!o.haEstatCridat(pisActual)) {
+                o.cridat(pisActual);
+            }
+        }
     }
 }

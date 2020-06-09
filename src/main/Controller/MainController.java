@@ -1,9 +1,6 @@
 package main.Controller;
 
-import main.Models.Ascensor;
-import main.Models.Edifici;
-import main.Models.Passatger;
-import main.Models.Rellotge;
+import main.Models.*;
 import main.TipusAscensor.TipusAscensor;
 import main.TipusAscensor.ascensors.Imparell;
 import main.TipusAscensor.ascensors.Lineal;
@@ -38,23 +35,45 @@ public class MainController {
 
         ProcesAscensor ascensor1 = new ProcesAscensor("Ascensor 1",
                 getEdifici(), getEdifici().getAscensor1List().get(0));
+        enllasarPassatgers(getEdifici().getAscensor1List().get(0), getInstance().getEdifici().getPersonesList());
         ascensor1.start();
+
         if (numAscensors > 1) {
             ProcesAscensor ascensor2 = new ProcesAscensor("Ascensor 2",
                     getEdifici(), getEdifici().getAscensor1List().get(1));
+            enllasarPassatgers(getEdifici().getAscensor1List().get(1), getInstance().getEdifici().getPersonesList());
             ascensor2.start();
+
             if (numAscensors > 2) {
                 ProcesAscensor ascensor3 = new ProcesAscensor("Ascensor 3",
                         getEdifici(), getEdifici().getAscensor1List().get(2));
+                enllasarPassatgers(getEdifici().getAscensor1List().get(2), getInstance().getEdifici().getPersonesList());
                 ascensor3.start();
+
                 if (numAscensors > 3) {
                     ProcesAscensor ascensor4 = new ProcesAscensor("Ascensor 4",
                             getEdifici(), getEdifici().getAscensor1List().get(3));
+                    enllasarPassatgers(getEdifici().getAscensor1List().get(3),
+                            getInstance().getEdifici().getPersonesList());
                     ascensor4.start();
+
                 }
             }
         }
     }
+
+    private void enllasarPassatgers(Ascensor ascensor, LinkedList<Passatger> personesList) {
+        for (Passatger p : personesList) {
+            checkEnllas(ascensor, p);
+        }
+    }
+
+    private void checkEnllas(Ascensor ascensor, Passatger p) {
+        if (ascensor.getTipus() instanceof Lineal) p.enllasarObservador(ascensor);
+        if (p.getPisDesitjat() % 2 == 0 && (ascensor.getTipus() instanceof Parell)) p.enllasarObservador(ascensor);
+        else if (p.getPisDesitjat() % 2 != 0 && (ascensor.getTipus() instanceof Imparell)) p.enllasarObservador(ascensor);
+    }
+
 
     private void crearEdifici(int numPisos, int numAscensors, int numPersones, ArrayList<String> tipusAscensors) {
         ArrayList<Ascensor> ascensors = crearAscensors(numAscensors, tipusAscensors);
@@ -75,11 +94,6 @@ public class MainController {
                     } else return 0;
                 }
             }
-        });
-        passatgers.forEach((v) -> {
-
-            System.out.println(v.getPisDesitjat() + " " +
-                    v.getHoraEntrada().getHora() + ":" + v.getHoraEntrada().getMinuts());
         });
 
         Edifici edifici = new Edifici(numPisos, ascensors, passatgers);
@@ -131,19 +145,19 @@ public class MainController {
 
     private ArrayList<Ascensor> crearAscensors(int numAscensors, ArrayList<String> tipusAscensors) {
         ArrayList<Ascensor> ascensors = new ArrayList<>();
-        Ascensor ascensor1 = new Ascensor(getTipusAscensor(tipusAscensors.get(0)));
+        Ascensor ascensor1 = new Ascensor(1, getTipusAscensor(tipusAscensors.get(0)));
         ascensors.add(ascensor1);
 
         if (numAscensors > 1) {
-            Ascensor ascensor2 = new Ascensor(getTipusAscensor(tipusAscensors.get(1)));
+            Ascensor ascensor2 = new Ascensor(2, getTipusAscensor(tipusAscensors.get(1)));
             ascensors.add(ascensor2);
 
             if (numAscensors > 2) {
-                Ascensor ascensor3 = new Ascensor(getTipusAscensor(tipusAscensors.get(2)));
+                Ascensor ascensor3 = new Ascensor(3, getTipusAscensor(tipusAscensors.get(2)));
                 ascensors.add(ascensor3);
 
                 if (numAscensors > 3) {
-                    Ascensor ascensor4 = new Ascensor(getTipusAscensor(tipusAscensors.get(3)));
+                    Ascensor ascensor4 = new Ascensor(4, getTipusAscensor(tipusAscensors.get(3)));
                     ascensors.add(ascensor4);
                 }
             }

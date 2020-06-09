@@ -1,6 +1,9 @@
 package main.Models;
 
 import main.Controller.MainController;
+import main.Estats.Ascensor.EstatAscensor;
+import main.Estats.Ascensor.Lliure;
+import main.ObservadorAscensor.Observador;
 import main.Statistics.Temps;
 import main.TipusAscensor.TipusAscensor;
 import main.TipusAscensor.ascensors.Imparell;
@@ -9,10 +12,11 @@ import main.TipusAscensor.ascensors.Parell;
 
 import java.util.LinkedList;
 
-public class Ascensor {
+public class Ascensor implements Observador, EstatAscensor {
 
-    private static final int PUJA = 1;
-    private static final int BAIXA = -1;
+    private EstatAscensor estat;
+
+    private static Direccio direccio;
     private int maxPassatgers = 11;
 
     private int id;
@@ -24,20 +28,34 @@ public class Ascensor {
 
     protected int pisActual;
     private int pisDesti;
+
     private boolean puja; //indica si l'ascensor va cap a munt
+
     private int tempsAturatTotal = 0;
     private int tempsParada = 0;
 
     private LinkedList<Passatger> passatgers;
-    private boolean enMoviment;
+    private boolean cridat;
 
-    public Ascensor(TipusAscensor tipus) {
+    public Ascensor(int numAscensor, TipusAscensor tipus) {
+        this.id = numAscensor;
+        this.tipus = tipus; //tipus de l'ascensor
+
         this.controller = MainController.getInstance();
         this.tipus = tipus;
         edifici = controller.getInstance().getEdifici();
-        this.tipus = tipus; //tipus de l'ascensor
         this.tipus.setAscensor(this);
         this.pisActual = 0;
+
+        passatgers = new LinkedList<>();
+        tempsEspera = new Temps();
+
+        setEstat(new Lliure());
+    }
+
+    public void setEstat(EstatAscensor estat) {
+        this.estat = estat;
+        this.estat.setAscensor(this);
     }
 
     public int getId() {
@@ -48,6 +66,7 @@ public class Ascensor {
     }
 
     public int getNumPassatgersAscensor() {
+        if (passatgers == null) return 0;
         return passatgers.size();
     }
 
@@ -58,6 +77,8 @@ public class Ascensor {
     public boolean estaPle() {
         return getNumPassatgersAscensor() >= maxPassatgers;
     }
+
+    public boolean estaBuit() { return getNumPassatgersAscensor() == 0; }
 
     /**
      *
@@ -76,8 +97,8 @@ public class Ascensor {
         return pisActual <= 0;
     }
 
-    public int getSentit() {
-        return puja ? PUJA : BAIXA;
+    public Direccio getSentit() {
+        return puja ? Direccio.PUJA : Direccio.BAIXA;
     }
 
     public void setPuja(boolean puja) {
@@ -89,26 +110,26 @@ public class Ascensor {
     }
 
     public boolean pujaPassatger(Passatger passatger) {
-        if (getNumPassatgersAscensor() + 1 > maxPassatgers) return false;
+        boolean puja = tipus.pujaPassatger(passatger);
+        if (!puja) return false;
         else {
-            boolean puja = tipus.pujaPassatger(passatger);
-            if (!puja) return false;
-            else {
-                passatgers.add(passatger);
-                passatger.setAscensor(this);
-                tempsEspera.afegirTempsEnEspera(passatger.getTime());
-                passatger.resetTime();
-                System.out.println("Un passatger puja a " + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
-                return true;
-            }
+            passatgers.add(passatger);
+            passatger.setAscensor(this);
+            tempsEspera.afegirTempsEnEspera(passatger.getTime());
+            passatger.resetTime();
+            System.out.println("En l'ascensor: " + getId() + ", un passatger puja al pis "
+                    + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
+            return true;
         }
     }
 
     public void baixaPassatger(Passatger passatger) {
         if (passatgers.contains(passatger)) {
+            edifici.getPersonesList().remove(passatger);
             passatgers.remove(passatger);
             passatger.setAscensor(null);
             tempsEspera.afegirTempsEnViatge(passatger.getTime());
+            incrementaTempsParada(5);
             tipus.baixaPassatger(passatger);
         }
     }
@@ -123,26 +144,18 @@ public class Ascensor {
 
     public boolean noExisteixTrucadaPelCami() {
         if (puja) {
+            if (!tipus.getUp().isEmpty()) return false;
             for (int i = pisActual; i <= edifici.getNumpisos(); ++i) {
                 if (edifici.getNumPersonesEsperantAlPis(i) > 0) {
                     return comprovaPis(i);
                 }
-                for (Passatger p : passatgers) {
-                    if (p.getPisDesitjat() == i) {
-                        return false;
-                    }
-                }
             }
             return true;
         } else {
+            if (!tipus.getDown().isEmpty()) return false;
             for (int i = pisActual; i >= 0; --i) {
                 if (edifici.getNumPersonesEsperantAlPis(i) > 0) {
                     return comprovaPis(i);
-                }
-                for (Passatger p : passatgers) {
-                    if (p.getPisDesitjat() == i) {
-                        return false;
-                    }
                 }
             }
             return true;
@@ -237,18 +250,47 @@ public class Ascensor {
         this.passatgers = passatgers;
     }
 
-    public boolean isEnMoviment() {
-        return enMoviment;
+    public boolean pisConteGentEsperant(int pis) {
+        return edifici.getNumPersonesEsperantAlPis(pis) > 0;
     }
 
-    public void setEnMoviment(boolean enMoviment) {
-        this.enMoviment = enMoviment;
-    }
 
     public void activarMoviment() {
         setTempsParada(0);
         setTempsAturatTotal(0);
-        setEnMoviment(true);
         tipus.activarMoviment();
+    }
+
+    @Override
+    public void cridat(int planta) {
+        if (planta < pisActual) tipus.getDown().add(planta);
+        else if (planta > pisActual) tipus.getUp().add(planta);
+    }
+
+    @Override
+    public boolean haEstatCridat(int planta) {
+        if (planta < pisActual && tipus.getDown().contains(planta)) return true;
+        if (planta > pisActual && tipus.getUp().contains(planta)) return true;
+        return false;
+    }
+
+    @Override
+    public void carregar() {
+        this.estat.carregar();
+    }
+
+    @Override
+    public void descarregar() {
+        this.estat.descarregar();
+    }
+
+    @Override
+    public void desplasar(int planta) {
+        this.estat.desplasar(planta);
+    }
+
+    @Override
+    public void setAscensor(Ascensor ascensor) {
+        this.estat.setAscensor(ascensor);
     }
 }

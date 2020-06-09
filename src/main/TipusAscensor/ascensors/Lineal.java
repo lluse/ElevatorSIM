@@ -1,10 +1,11 @@
 package main.TipusAscensor.ascensors;
 
 import main.Models.Ascensor;
+import main.Models.Direccio;
 import main.Models.Passatger;
-import main.Models.Rellotge;
 import main.TipusAscensor.TipusAscensor;
-import main.vistes.GUI.Simulacio;
+
+import java.util.*;
 
 public class Lineal extends TipusAscensor {
 
@@ -27,8 +28,10 @@ public class Lineal extends TipusAscensor {
                 && (ascensor.getEdifici().getTotalPersonesEsperant() != 0
                 || ascensor.getNumPassatgersAscensor() != 0)) {
 
-            ascensor.setEnMoviment(false);
-            ascensor.baixaPassatgersQueHanArribat();
+            ascensor.descarregar();
+            if (ascensor.pisConteGentEsperant(ascensor.getPisActual())) {
+                ascensor.carregar();
+            }
 
             if (!ascensor.estaPle()) {
                 int i = 0;
@@ -37,12 +40,11 @@ public class Lineal extends TipusAscensor {
                         comprovaHora(ascensor.getEdifici()
                                 .getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i).getHoraEntrada())) {
                     Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
-                    if (p != null) p.potPujarAlAscensor(ascensor);
+                    if (p != null) { ascensor.pujaPassatger(p); }
                     ++i;
+                    ascensor.incrementaTempsAturatTotal(1);
                 }
             }
-
-            ascensor.incrementaTempsAturatTotal(1);
 
             if ((ascensor.dalt() && ascensor.Puja()) || (ascensor.baix() && !ascensor.Puja()) ||
                     (ascensor.noExisteixTrucadaPelCami())) {
@@ -51,22 +53,34 @@ public class Lineal extends TipusAscensor {
 
             if (ascensor.getTempsAturatTotal() >= ascensor.getTempsParada()) ascensor.activarMoviment();
         } else {
-            ascensor.setEnMoviment(false);
         }
+    }
+
+    private void afegirPis(int pisDesitjat) {
+        if (pisDesitjat > ascensor.getPisActual()) up.add(pisDesitjat);
+        else if (pisDesitjat < ascensor.getPisActual()) down.add(pisDesitjat);
+
+        //else pisDesitjat == pisActual aixi que no l'afegim enlloc
     }
 
     @Override
     public boolean pujaPassatger(Passatger passatger) {
         ascensor.incrementaTempsParada(5);
+        ascensor.incrementaTempsAturatTotal(5);
         return true;
     }
 
     @Override
     public void baixaPassatger(Passatger passatger) {
-        ascensor.incrementaTempsParada(5);
+        System.out.println("Passatger baixa al pis " + passatger.getPisDesitjat());
+
     }
 
     @Override
     public void activarMoviment() {
+        int pisSeguent = nextFloor();
+        System.out.println("Pis seguent: " + pisSeguent);
+        ascensor.setPisActual(pisSeguent);
     }
+
 }
