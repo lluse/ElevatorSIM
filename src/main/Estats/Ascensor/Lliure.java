@@ -29,7 +29,10 @@ public class Lliure implements EstatAscensor {
     @Override
     public void desplasar(int planta) {
         ascensor.setEstat(new Moviment());
+        ascensor.activarMoviment();
     }
+
+
 
 
     @Override

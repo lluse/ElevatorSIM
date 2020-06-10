@@ -3,12 +3,14 @@ package main.Models;
 import main.Controller.MainController;
 import main.Estats.Ascensor.EstatAscensor;
 import main.Estats.Ascensor.Lliure;
+import main.Estats.Ascensor.Moviment;
 import main.ObservadorAscensor.Observador;
 import main.Statistics.Temps;
 import main.TipusAscensor.TipusAscensor;
 import main.TipusAscensor.ascensors.Imparell;
 import main.TipusAscensor.ascensors.Lineal;
 import main.TipusAscensor.ascensors.Parell;
+import main.vistes.GUI.Simulacio;
 
 import java.util.LinkedList;
 
@@ -46,6 +48,7 @@ public class Ascensor implements Observador, EstatAscensor {
         edifici = controller.getInstance().getEdifici();
         this.tipus.setAscensor(this);
         this.pisActual = 0;
+        direccio = Direccio.PUJA;
 
         passatgers = new LinkedList<>();
         tempsEspera = new Temps();
@@ -115,8 +118,11 @@ public class Ascensor implements Observador, EstatAscensor {
         else {
             passatgers.add(passatger);
             passatger.setAscensor(this);
-            tempsEspera.afegirTempsEnEspera(passatger.getTime());
+            //tempsEspera.afegirTempsEnEspera(passatger.getTime());
+            edifici.esborraPassatgerEsperant(passatger.pisActual, passatger);
             passatger.resetTime();
+            tipus.afegirPlantaDesti(passatger.getPisDesitjat());
+
             System.out.println("En l'ascensor: " + getId() + ", un passatger puja al pis "
                     + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
             return true;
@@ -258,19 +264,38 @@ public class Ascensor implements Observador, EstatAscensor {
     public void activarMoviment() {
         setTempsParada(0);
         setTempsAturatTotal(0);
-        tipus.activarMoviment();
+        if ((dalt() && Puja()) || (baix() && !Puja()) || noExisteixTrucadaPelCami()) {
+            canviaDireccio();
+        }
+        int nextFloor = tipus.nextFloor();
+        estat.desplasar(nextFloor);
+    }
+
+    public boolean comprovaHora(Rellotge horaEntrada) {
+        if (horaEntrada.getHora() <= Simulacio.rellotgeDinamic.getHora()) {
+            if (horaEntrada.getMinuts() <= Simulacio.rellotgeDinamic.getMinuts()) return true;
+        }
+        return false;
     }
 
     @Override
     public void cridat(int planta) {
         if (planta < pisActual) tipus.getDown().add(planta);
         else if (planta > pisActual) tipus.getUp().add(planta);
+        if (this.estat instanceof Lliure) {
+            this.desplasar(planta);
+        }
     }
 
     @Override
     public boolean haEstatCridat(int planta) {
         if (planta < pisActual && tipus.getDown().contains(planta)) return true;
         if (planta > pisActual && tipus.getUp().contains(planta)) return true;
+        return false;
+    }
+
+    @Override
+    public boolean noHaEstatCridatEnTotEdifici() {
         return false;
     }
 

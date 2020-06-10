@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Passatger implements SubjecteObservable {
 
-    private ArrayList<Observador> observadors;
+    private Observador observador;
 
     protected MainController controller;
 
@@ -17,13 +17,15 @@ public class Passatger implements SubjecteObservable {
     protected long tempsInici;
 
     protected Ascensor ascensor;
+
     protected int pisActual;
     protected int pisDesitjat;
+
     private Rellotge horaEntrada;
 
 
     public Passatger(int pisActual, int pisDesitjat, Rellotge horaEntrada) {
-        observadors = new ArrayList<>();
+        observador = null;
         controller = MainController.getInstance();
 
         this.pisActual = pisActual;
@@ -120,14 +122,14 @@ public class Passatger implements SubjecteObservable {
         cridar();
     }
 
-    public void enllasarObservador(Observador o) {observadors.add(o);}
+    public void enllasarObservador(Observador o) {
+        observador = o;
+    }
 
     @Override
     public void cridar() {
-        for (Observador o : observadors) {
-            if (!o.haEstatCridat(pisActual)) {
-                o.cridat(pisActual);
-            }
+        if (!observador.haEstatCridat(pisActual)) {
+            observador.cridat(pisActual);
         }
     }
 }

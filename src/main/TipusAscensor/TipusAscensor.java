@@ -60,6 +60,19 @@ public abstract class TipusAscensor {
 
     public abstract void activarMoviment();
 
+    public void afegirPlantaDesti(int planta) {
+        if (planta > this.ascensor.getPisActual()) {
+            System.out.print("Up: ");
+            up.forEach((v) -> System.out.println(v) );
+            up.add(planta);
+        }
+        else if (planta < this.ascensor.getPisActual()) {
+            System.out.print("Down: ");
+            down.forEach((v) -> System.out.println(v) );
+            down.add(planta);
+        }
+    }
+
     protected boolean comprovaHora(Rellotge horaEntrada) {
         if (horaEntrada.getHora() <= Simulacio.rellotgeDinamic.getHora()) {
             if (horaEntrada.getMinuts() <= Simulacio.rellotgeDinamic.getMinuts()) return true;
@@ -68,7 +81,16 @@ public abstract class TipusAscensor {
     }
 
     public int nextFloor() {
-        if (ascensor.getSentit() == Direccio.PUJA) return up.pollFirst();
-        else return down.pollLast();
+        if (ascensor.getSentit() == Direccio.PUJA) {
+            System.out.print("Up: ");
+            up.forEach((v) -> System.out.println(v) );
+            return up.pollFirst();
+        }
+
+        else {
+            System.out.print("Down: ");
+            down.forEach((v) -> System.out.println(v) );
+            return down.pollLast();
+        }
     }
 }

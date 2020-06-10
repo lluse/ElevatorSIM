@@ -30,33 +30,33 @@ public class MainController {
         MainController.edifici = edifici;
     }
 
-    public void start_simulation(int numPisos, int numAscensors, int numPersones, ArrayList<String> tipusAscensors) {
+    public void start_simulation(int numPisos, int numAscensors, int numPersones, ArrayList<String> tipusAscensors) throws InterruptedException {
         crearEdifici(numPisos, numAscensors, numPersones, tipusAscensors);
 
         ProcesAscensor ascensor1 = new ProcesAscensor("Ascensor 1",
                 getEdifici(), getEdifici().getAscensor1List().get(0));
         enllasarPassatgers(getEdifici().getAscensor1List().get(0), getInstance().getEdifici().getPersonesList());
         ascensor1.start();
-
+        ascensor1.join();
         if (numAscensors > 1) {
             ProcesAscensor ascensor2 = new ProcesAscensor("Ascensor 2",
                     getEdifici(), getEdifici().getAscensor1List().get(1));
             enllasarPassatgers(getEdifici().getAscensor1List().get(1), getInstance().getEdifici().getPersonesList());
             ascensor2.start();
-
+            ascensor2.join();
             if (numAscensors > 2) {
                 ProcesAscensor ascensor3 = new ProcesAscensor("Ascensor 3",
                         getEdifici(), getEdifici().getAscensor1List().get(2));
                 enllasarPassatgers(getEdifici().getAscensor1List().get(2), getInstance().getEdifici().getPersonesList());
                 ascensor3.start();
-
+                ascensor3.join();
                 if (numAscensors > 3) {
                     ProcesAscensor ascensor4 = new ProcesAscensor("Ascensor 4",
                             getEdifici(), getEdifici().getAscensor1List().get(3));
                     enllasarPassatgers(getEdifici().getAscensor1List().get(3),
                             getInstance().getEdifici().getPersonesList());
                     ascensor4.start();
-
+                    ascensor4.join();
                 }
             }
         }
@@ -100,8 +100,10 @@ public class MainController {
         getInstance().setEdifici(edifici);
         for (Ascensor ascensor : ascensors) {
             ascensor.setEdifici(edifici);
-            Edifici ed = ascensor.getEdifici();
         }
+        passatgers.forEach((v) -> {
+            System.out.println(v.getPisDesitjat() + " " + v.getHoraEntrada().toString());
+        });
 
     }
 

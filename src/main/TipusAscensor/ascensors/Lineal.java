@@ -33,6 +33,7 @@ public class Lineal extends TipusAscensor {
                 ascensor.carregar();
             }
 
+            /*
             if (!ascensor.estaPle()) {
                 int i = 0;
                 while (!ascensor.estaPle() &&
@@ -50,8 +51,9 @@ public class Lineal extends TipusAscensor {
                     (ascensor.noExisteixTrucadaPelCami())) {
                 ascensor.canviaDireccio();
             }
+             */
 
-            if (ascensor.getTempsAturatTotal() >= ascensor.getTempsParada()) ascensor.activarMoviment();
+            //if (ascensor.getTempsAturatTotal() >= ascensor.getTempsParada()) ascensor.activarMoviment();
         } else {
         }
     }

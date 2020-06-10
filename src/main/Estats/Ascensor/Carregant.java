@@ -2,6 +2,7 @@ package main.Estats.Ascensor;
 
 import main.Estats.Ascensor.EstatAscensor;
 import main.Models.Ascensor;
+import main.Models.Passatger;
 
 public class Carregant implements EstatAscensor {
 
@@ -9,7 +10,18 @@ public class Carregant implements EstatAscensor {
 
     @Override
     public void carregar() {
+        int i = 0;
+        while (!ascensor.estaPle() &&
+                i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual()) &&
+                ascensor.comprovaHora(ascensor.getEdifici()
+                        .getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i).getHoraEntrada())) {
+            Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
+            if (p != null) { ascensor.pujaPassatger(p); }
+            ++i;
+            ascensor.incrementaTempsAturatTotal(1);
+        }
 
+        ascensor.setEstat(new Moviment());
     }
 
     @Override

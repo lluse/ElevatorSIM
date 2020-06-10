@@ -59,9 +59,13 @@ public class Simulacio {
         executar.setEnabled(false);
         iniciarRellotgeActual();
 
-        MainController.getInstance().start_simulation(ConfiguracioModel.getNum_plantes_final(),
-                ConfiguracioModel.getNum_ascensors_final(), ConfiguracioModel.getNum_persones_final(),
-                afegirTipusAscensorArraylist());
+        try {
+            MainController.getInstance().start_simulation(ConfiguracioModel.getNum_plantes_final(),
+                    ConfiguracioModel.getNum_ascensors_final(), ConfiguracioModel.getNum_persones_final(),
+                    afegirTipusAscensorArraylist());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<String> afegirTipusAscensorArraylist() {
