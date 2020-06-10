@@ -12,13 +12,15 @@ public class Lliure implements EstatAscensor {
             ascensor.setEstat(new Carregant());
             ascensor.carregar();
         } else {
-            if ((ascensor.dalt() && ascensor.Puja()) || (ascensor.baix() && !ascensor.Puja()) ||
-                    (ascensor.noExisteixTrucadaPelCami())) {
-                ascensor.canviaDireccio();
+            if (!ascensor.noHaEstatCridatEnTotEdifici()) { //si l'han cridat des d'alguna planta llavors es mou, sino res
+                if ((ascensor.dalt() && ascensor.Puja()) || (ascensor.baix() && !ascensor.Puja()) ||
+                        (ascensor.noExisteixTrucadaPelCami())) {
+                    ascensor.canviaDireccio();
+                }
+                int planta = ascensor.getTipus().nextFloor();
+                ascensor.setEstat(new Moviment());
+                ascensor.desplasar(planta);
             }
-            int planta = ascensor.getTipus().nextFloor();
-            ascensor.setEstat(new Moviment());
-            ascensor.desplasar(planta);
         }
     }
 
@@ -28,8 +30,10 @@ public class Lliure implements EstatAscensor {
 
     @Override
     public void desplasar(int planta) {
-        ascensor.setEstat(new Moviment());
-        ascensor.activarMoviment();
+        if (!ascensor.noHaEstatCridatEnTotEdifici()) {
+            ascensor.setEstat(new Moviment());
+            ascensor.activarMoviment();
+        }
     }
 
 

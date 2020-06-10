@@ -5,5 +5,5 @@ public interface Observador {
 
     boolean haEstatCridat(int planta);
 
-    boolean noHaEstatCridatEnTotEdifici();
+    //boolean noHaEstatCridatEnTotEdifici();
 }

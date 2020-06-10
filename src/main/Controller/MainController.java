@@ -101,9 +101,11 @@ public class MainController {
         for (Ascensor ascensor : ascensors) {
             ascensor.setEdifici(edifici);
         }
+        /*
         passatgers.forEach((v) -> {
             System.out.println(v.getPisDesitjat() + " " + v.getHoraEntrada().toString());
         });
+         */
 
     }
 
@@ -116,7 +118,7 @@ public class MainController {
             Passatger passatgerAnada, passatgerTornada;
 
             if (i < (numPersones/5)) {
-                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(8, 30));
+                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(8, 55));
                 passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(8 + 3, 30));
             }
             else if ((numPersones/5) < i && i < (numPersones/5) * 2) {
@@ -185,7 +187,7 @@ public class MainController {
 
     private Rellotge obtenirHoraAnada(int hora, int minuts) {
         Random aleatori = new Random();
-        int numAleatori = minuts + aleatori.nextInt(45 - minuts);
+        int numAleatori = minuts + aleatori.nextInt(60 - minuts);
         return new Rellotge(hora, numAleatori, 0);
     }
 

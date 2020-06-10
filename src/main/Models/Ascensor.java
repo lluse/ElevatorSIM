@@ -123,7 +123,8 @@ public class Ascensor implements Observador, EstatAscensor {
             passatger.resetTime();
             tipus.afegirPlantaDesti(passatger.getPisDesitjat());
 
-            System.out.println("En l'ascensor: " + getId() + ", un passatger puja al pis "
+            System.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
+                    + " En l'ascensor: " + getId() + ", un passatger puja al pis "
                     + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
             return true;
         }
@@ -294,9 +295,12 @@ public class Ascensor implements Observador, EstatAscensor {
         return false;
     }
 
-    @Override
     public boolean noHaEstatCridatEnTotEdifici() {
-        return false;
+        int numPlantes = edifici.getNumpisos();
+        for (int i = 0; i < numPlantes; ++i) {
+            if (haEstatCridat(i)) return false;
+        }
+        return true;
     }
 
     @Override
