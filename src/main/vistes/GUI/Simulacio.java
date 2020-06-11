@@ -33,7 +33,7 @@ public class Simulacio {
     public JLabel lblRellotge;
 
     SimuladorFactory sim = new SimuladorFactory();
-    public static volatile RellotgeDinamic rellotgeDinamic;
+    public static volatile Rellotge rellotgeDinamic;
 
     public static Simulacio getInstance() {
         if (instance == null) return new Simulacio();
@@ -44,7 +44,7 @@ public class Simulacio {
         afegirImatgesAscensor();
         afegirTipusAscensor();
         executar.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/icons_play.png")));
-        rellotgeDinamic = new RellotgeDinamic(8,59,0);
+        rellotgeDinamic = new Rellotge(8,59,0);
         lblRellotge.setText(rellotgeDinamic.toString());
         executar.addActionListener(new ActionListener() {
             @Override
@@ -116,11 +116,11 @@ public class Simulacio {
         else tipus4.setText("Ascensor Tancat");
     }
 
-    public RellotgeDinamic getRellotgeActual() {
+    public Rellotge getRellotgeActual() {
         return rellotgeDinamic;
     }
 
-    public void setRellotgeActual(RellotgeDinamic rellotgeDinamic) {
+    public void setRellotgeActual(Rellotge rellotgeDinamic) {
         this.rellotgeDinamic = rellotgeDinamic;
     }
 }

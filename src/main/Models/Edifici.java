@@ -69,7 +69,7 @@ public class Edifici {
         currentValue.add(passatger);
     }
 
-    public int getTotalPersonesEsperant() {
+    public synchronized int getTotalPersonesEsperant() {
         int num = 0;
         for (Passatger p : personesList) {
             if (!p.haArribat() && !p.estaAlAscensor()) num += 1;

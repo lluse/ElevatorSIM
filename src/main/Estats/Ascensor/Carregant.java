@@ -1,5 +1,6 @@
 package main.Estats.Ascensor;
 
+import main.Controller.ProcesAscensor;
 import main.Estats.Ascensor.EstatAscensor;
 import main.Models.Ascensor;
 import main.Models.Passatger;

@@ -3,7 +3,6 @@ package main.Models;
 import main.Controller.MainController;
 import main.Estats.Ascensor.EstatAscensor;
 import main.Estats.Ascensor.Lliure;
-import main.Estats.Ascensor.Moviment;
 import main.ObservadorAscensor.Observador;
 import main.Statistics.Temps;
 import main.TipusAscensor.TipusAscensor;
@@ -14,7 +13,7 @@ import main.vistes.GUI.Simulacio;
 
 import java.util.LinkedList;
 
-public class Ascensor implements Observador, EstatAscensor {
+public class Ascensor extends Thread implements Observador, EstatAscensor {
 
     private EstatAscensor estat;
 
@@ -32,6 +31,8 @@ public class Ascensor implements Observador, EstatAscensor {
     private int pisDesti;
 
     private boolean puja; //indica si l'ascensor va cap a munt
+    private boolean apagat;
+
 
     private int tempsAturatTotal = 0;
     private int tempsParada = 0;
@@ -49,6 +50,7 @@ public class Ascensor implements Observador, EstatAscensor {
         this.tipus.setAscensor(this);
         this.pisActual = 0;
         direccio = Direccio.PUJA;
+        apagat = false;
 
         passatgers = new LinkedList<>();
         tempsEspera = new Temps();
@@ -61,7 +63,7 @@ public class Ascensor implements Observador, EstatAscensor {
         this.estat.setAscensor(this);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
     public void setId(int id) {
@@ -122,10 +124,10 @@ public class Ascensor implements Observador, EstatAscensor {
             edifici.esborraPassatgerEsperant(passatger.pisActual, passatger);
             passatger.resetTime();
             tipus.afegirPlantaDesti(passatger.getPisDesitjat());
-
             System.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
                     + " En l'ascensor: " + getId() + ", un passatger puja al pis "
                     + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
+
             return true;
         }
     }
@@ -283,6 +285,9 @@ public class Ascensor implements Observador, EstatAscensor {
     public void cridat(int planta) {
         if (planta < pisActual) tipus.getDown().add(planta);
         else if (planta > pisActual) tipus.getUp().add(planta);
+        else {
+            this.carregar();
+        }
         if (this.estat instanceof Lliure) {
             this.desplasar(planta);
         }
@@ -293,6 +298,10 @@ public class Ascensor implements Observador, EstatAscensor {
         if (planta < pisActual && tipus.getDown().contains(planta)) return true;
         if (planta > pisActual && tipus.getUp().contains(planta)) return true;
         return false;
+    }
+
+    public void apagarAscensor() {
+        if (!apagat) apagat = true;
     }
 
     public boolean noHaEstatCridatEnTotEdifici() {
@@ -321,5 +330,22 @@ public class Ascensor implements Observador, EstatAscensor {
     @Override
     public void setAscensor(Ascensor ascensor) {
         this.estat.setAscensor(ascensor);
+    }
+
+    @Override
+    public void run() {
+        while (!apagat) {
+            if (noHaEstatCridatEnTotEdifici()) {
+                //System.out.println(Thread.currentThread() + " " + " encara no m'han cridat");
+                try {
+                    this.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                //System.out.println(Thread.currentThread() + " " + " ja m'han cridat");
+                acts();
+            }
+        }
     }
 }

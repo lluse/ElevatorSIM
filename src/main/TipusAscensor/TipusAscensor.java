@@ -74,7 +74,6 @@ public abstract class TipusAscensor {
 
     public int nextFloor() {
         if (ascensor.getSentit() == Direccio.PUJA) return up.pollFirst();
-
         else return down.pollLast();
     }
 }

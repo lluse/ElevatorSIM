@@ -38,7 +38,7 @@ public class Rellotge {
         this.segons = segons;
     }
 
-    public void incrementar() {
+    public String incrementar() {
         segons++;
         if (segons == 60) {
             segons = 0;
@@ -47,10 +47,14 @@ public class Rellotge {
             minuts = 0;
             hora = (hora+1)%24;
         }
+        return toString();
     }
 
     @Override
     public String toString() {
+        String hora = (this.hora < 10) ? "0" + this.hora : String.valueOf(this.hora);
+        String minuts = (this.minuts < 10) ? "0" + this.minuts : String.valueOf(this.minuts);
+        String segons = (this.segons < 10) ? "0" + this.segons : String.valueOf(this.segons);
         return hora + ":" + minuts + ":" + segons;
     }
 }

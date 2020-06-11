@@ -33,30 +33,23 @@ public class MainController {
     public void start_simulation(int numPisos, int numAscensors, int numPersones, ArrayList<String> tipusAscensors) throws InterruptedException {
         crearEdifici(numPisos, numAscensors, numPersones, tipusAscensors);
 
-        ProcesAscensor ascensor1 = new ProcesAscensor("Ascensor 1",
-                getEdifici(), getEdifici().getAscensor1List().get(0));
+        ProcesAscensor ascensor = new ProcesAscensor(getEdifici(), getEdifici().getPersonesList());
+        ascensor.start();
         enllasarPassatgers(getEdifici().getAscensor1List().get(0), getInstance().getEdifici().getPersonesList());
-        ascensor1.start();
-        ascensor1.join();
+        getEdifici().getAscensor1List().get(0).start();
+
         if (numAscensors > 1) {
-            ProcesAscensor ascensor2 = new ProcesAscensor("Ascensor 2",
-                    getEdifici(), getEdifici().getAscensor1List().get(1));
             enllasarPassatgers(getEdifici().getAscensor1List().get(1), getInstance().getEdifici().getPersonesList());
-            ascensor2.start();
-            ascensor2.join();
+            getEdifici().getAscensor1List().get(1).start();
+
             if (numAscensors > 2) {
-                ProcesAscensor ascensor3 = new ProcesAscensor("Ascensor 3",
-                        getEdifici(), getEdifici().getAscensor1List().get(2));
                 enllasarPassatgers(getEdifici().getAscensor1List().get(2), getInstance().getEdifici().getPersonesList());
-                ascensor3.start();
-                ascensor3.join();
+                getEdifici().getAscensor1List().get(2).start();
+
                 if (numAscensors > 3) {
-                    ProcesAscensor ascensor4 = new ProcesAscensor("Ascensor 4",
-                            getEdifici(), getEdifici().getAscensor1List().get(3));
-                    enllasarPassatgers(getEdifici().getAscensor1List().get(3),
-                            getInstance().getEdifici().getPersonesList());
-                    ascensor4.start();
-                    ascensor4.join();
+                    enllasarPassatgers(getEdifici().getAscensor1List().get(3), getInstance().getEdifici().getPersonesList());
+                    getEdifici().getAscensor1List().get(3).start();
+
                 }
             }
         }
@@ -149,12 +142,14 @@ public class MainController {
 
     private ArrayList<Ascensor> crearAscensors(int numAscensors, ArrayList<String> tipusAscensors) {
         ArrayList<Ascensor> ascensors = new ArrayList<>();
+
         Ascensor ascensor1 = new Ascensor(1, getTipusAscensor(tipusAscensors.get(0)));
         ascensors.add(ascensor1);
 
         if (numAscensors > 1) {
             Ascensor ascensor2 = new Ascensor(2, getTipusAscensor(tipusAscensors.get(1)));
             ascensors.add(ascensor2);
+
 
             if (numAscensors > 2) {
                 Ascensor ascensor3 = new Ascensor(3, getTipusAscensor(tipusAscensors.get(2)));
@@ -163,6 +158,7 @@ public class MainController {
                 if (numAscensors > 3) {
                     Ascensor ascensor4 = new Ascensor(4, getTipusAscensor(tipusAscensors.get(3)));
                     ascensors.add(ascensor4);
+
                 }
             }
         }
