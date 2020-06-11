@@ -13,13 +13,11 @@ public class Carregant implements EstatAscensor {
     public void carregar() {
         int i = 0;
         while (!ascensor.estaPle() &&
-                i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual()) &&
-                ascensor.comprovaHora(ascensor.getEdifici()
-                        .getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i).getHoraEntrada())) {
+                i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
             Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
-            if (p != null) { ascensor.pujaPassatger(p); }
+            if (p != null) ascensor.pujaPassatger(p);
             ++i;
-            ascensor.incrementaTempsAturatTotal(1);
+            //ascensor.incrementaTempsAturatTotal(1);
         }
 
         ascensor.setEstat(new Moviment());

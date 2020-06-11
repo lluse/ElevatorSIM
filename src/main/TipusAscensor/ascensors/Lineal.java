@@ -25,8 +25,8 @@ public class Lineal extends TipusAscensor {
     @Override
     public void act() {
         if (!ascensor.getEdifici().totsElsPassatgersHanArribat()
-                && (ascensor.getEdifici().getTotalPersonesEsperant() != 0
-                || ascensor.getNumPassatgersAscensor() != 0)) {
+                && (ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual()) > 0
+                || ascensor.getNumPassatgersAscensor() > 0)) {
 
             ascensor.descarregar();
             if (ascensor.pisConteGentEsperant(ascensor.getPisActual())) {
@@ -55,6 +55,7 @@ public class Lineal extends TipusAscensor {
 
             //if (ascensor.getTempsAturatTotal() >= ascensor.getTempsParada()) ascensor.activarMoviment();
         } else {
+            this.ascensor.setEsperant(true);
         }
     }
 

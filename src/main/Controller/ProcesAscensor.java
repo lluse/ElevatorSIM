@@ -1,6 +1,5 @@
 package main.Controller;
 
-import main.Models.Ascensor;
 import main.Models.Edifici;
 import main.Models.Passatger;
 import main.Models.Rellotge;
@@ -22,15 +21,16 @@ public class ProcesAscensor extends Thread {
     @Override
     public void run() {
         index = 0;
-        while (edifici.getTotalPersonesEsperant() > 0) {
+        while (index < edifici.getPersonesList().size()) {
             boolean horaArribada = true;
             while (horaArribada) {
                 for (int i = index; i < passatgers.size() && horaArribada; ++i) {
                     Passatger passatger = passatgers.get(i);
                     if (passatgerEsperantHora(passatger.getHoraEntrada())) {
                         edifici.afegeixPassatgerEsperant(passatger.getPisActual(), passatger);
-                        passatger.cridar();
+                        if (!Passatger.isAlreadyCridat()) passatger.cridar();
                         ++index;
+                        System.out.println(i);
                     } else horaArribada = false;
                 }
             }

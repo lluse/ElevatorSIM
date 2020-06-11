@@ -39,7 +39,7 @@ public class Moviment implements EstatAscensor {
         Direccio dir = ascensor.getSentit();
         if (dir == Direccio.PUJA) ascensor.getTipus().getUp().remove(planta);
         else ascensor.getTipus().getDown().remove(planta);
-        System.out.println("L'ascensor es desplaça cap a la planta " + planta);
+        System.out.println("L'ascensor " + ascensor.getId() + " es desplaça cap a la planta " + planta);
     }
 
     @Override

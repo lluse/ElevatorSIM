@@ -36,19 +36,19 @@ public class MainController {
         ProcesAscensor ascensor = new ProcesAscensor(getEdifici(), getEdifici().getPersonesList());
         ascensor.start();
         enllasarPassatgers(getEdifici().getAscensor1List().get(0), getInstance().getEdifici().getPersonesList());
-        getEdifici().getAscensor1List().get(0).start();
+        new Thread(getEdifici().getAscensor1List().get(0)).start();
 
         if (numAscensors > 1) {
             enllasarPassatgers(getEdifici().getAscensor1List().get(1), getInstance().getEdifici().getPersonesList());
-            getEdifici().getAscensor1List().get(1).start();
+            new Thread(getEdifici().getAscensor1List().get(1)).start();
 
             if (numAscensors > 2) {
                 enllasarPassatgers(getEdifici().getAscensor1List().get(2), getInstance().getEdifici().getPersonesList());
-                getEdifici().getAscensor1List().get(2).start();
+                new Thread(getEdifici().getAscensor1List().get(2)).start();
 
                 if (numAscensors > 3) {
                     enllasarPassatgers(getEdifici().getAscensor1List().get(3), getInstance().getEdifici().getPersonesList());
-                    getEdifici().getAscensor1List().get(3).start();
+                    new Thread(getEdifici().getAscensor1List().get(3)).start();
 
                 }
             }
@@ -94,11 +94,11 @@ public class MainController {
         for (Ascensor ascensor : ascensors) {
             ascensor.setEdifici(edifici);
         }
-        /*
+
         passatgers.forEach((v) -> {
             System.out.println(v.getPisDesitjat() + " " + v.getHoraEntrada().toString());
         });
-         */
+
 
     }
 
@@ -112,29 +112,29 @@ public class MainController {
 
             if (i < (numPersones/5)) {
                 passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(8, 55));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(8 + 3, 30));
+                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(8 + 3, 30));
             }
             else if ((numPersones/5) < i && i < (numPersones/5) * 2) {
                 passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 0));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 0));
+                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 0));
             }
             else if ((numPersones/5) * 2 < i && i < (numPersones/5) * 3) {
                 passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 30));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 30));
+                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 30));
             }
 
             else if ((numPersones/5) * 3 < i && i < (numPersones/5) * 4) {
                 passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 0));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 0));
+                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 0));
             }
 
             else {
                 passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 30));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 30));
+                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 30));
             }
 
             passatgers.add(passatgerAnada);
-            passatgers.add(passatgerTornada);
+            //passatgers.add(passatgerTornada);
         }
 
         return passatgers;

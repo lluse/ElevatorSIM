@@ -11,9 +11,11 @@ import main.TipusAscensor.ascensors.Lineal;
 import main.TipusAscensor.ascensors.Parell;
 import main.vistes.GUI.Simulacio;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
-public class Ascensor extends Thread implements Observador, EstatAscensor {
+public class Ascensor implements Observador, EstatAscensor, Runnable {
 
     private EstatAscensor estat;
 
@@ -32,6 +34,7 @@ public class Ascensor extends Thread implements Observador, EstatAscensor {
 
     private boolean puja; //indica si l'ascensor va cap a munt
     private boolean apagat;
+    private boolean esperant;
 
 
     private int tempsAturatTotal = 0;
@@ -51,12 +54,18 @@ public class Ascensor extends Thread implements Observador, EstatAscensor {
         this.pisActual = 0;
         direccio = Direccio.PUJA;
         apagat = false;
+        esperant = false;
 
         passatgers = new LinkedList<>();
         tempsEspera = new Temps();
 
         setEstat(new Lliure());
     }
+
+    /**
+     * En aquest metode inicialitzem tots els pisos a false ja que ningu ha cridat encara a l'ascensor
+     * @return
+     */
 
     public void setEstat(EstatAscensor estat) {
         this.estat = estat;
@@ -283,6 +292,8 @@ public class Ascensor extends Thread implements Observador, EstatAscensor {
 
     @Override
     public void cridat(int planta) {
+        esperant = false;
+
         if (planta < pisActual) tipus.getDown().add(planta);
         else if (planta > pisActual) tipus.getUp().add(planta);
         else {
@@ -300,6 +311,21 @@ public class Ascensor extends Thread implements Observador, EstatAscensor {
         return false;
     }
 
+    public void setEsperant(boolean esperant) {
+        this.esperant = esperant;
+    }
+
+    @Override
+    public boolean estaEsperant() {
+        return esperant;
+    }
+
+    @Override
+    public int getPis() {
+        return pisActual;
+    }
+
+
     public void apagarAscensor() {
         if (!apagat) apagat = true;
     }
@@ -311,6 +337,7 @@ public class Ascensor extends Thread implements Observador, EstatAscensor {
         }
         return true;
     }
+
 
     @Override
     public void carregar() {
@@ -335,17 +362,27 @@ public class Ascensor extends Thread implements Observador, EstatAscensor {
     @Override
     public void run() {
         while (!apagat) {
-            if (noHaEstatCridatEnTotEdifici()) {
+            if (this.estat instanceof Lliure && (noHaEstatCridatEnTotEdifici() || esperant)) {
                 //System.out.println(Thread.currentThread() + " " + " encara no m'han cridat");
                 try {
-                    this.sleep(10);
+                    esperar();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             } else {
                 //System.out.println(Thread.currentThread() + " " + " ja m'han cridat");
+                esperant = false;
                 acts();
             }
         }
     }
+
+
+    private void esperar() throws InterruptedException {
+        if (!esperant) {
+            esperant = true;
+            Thread.sleep(10);
+        }
+    }
+
 }

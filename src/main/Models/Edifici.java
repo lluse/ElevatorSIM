@@ -5,7 +5,7 @@ import java.util.*;
 public class Edifici {
     private int numpisos;
     private ArrayList<Ascensor> ascensor1List;
-    private LinkedList<Passatger> personesList;
+    private final LinkedList<Passatger> personesList;
 
     private volatile Map<Integer, LinkedList<Passatger>> gentEsperant; //La clau d'aquest map es el pis en el que estan esperant actualment
 

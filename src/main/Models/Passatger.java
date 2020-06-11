@@ -5,10 +5,11 @@ import main.ObservadorAscensor.Observador;
 import main.ObservadorAscensor.SubjecteObservable;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Passatger implements SubjecteObservable {
 
-    private ArrayList<Observador> observador;
+    private volatile CopyOnWriteArrayList<Observador> observador;
 
     protected MainController controller;
 
@@ -23,9 +24,11 @@ public class Passatger implements SubjecteObservable {
 
     private Rellotge horaEntrada;
 
+    private static volatile boolean cridats;
+
 
     public Passatger(int pisActual, int pisDesitjat, Rellotge horaEntrada) {
-        observador = new ArrayList<>();
+        observador = new CopyOnWriteArrayList<>();
         controller = MainController.getInstance();
 
         this.pisActual = pisActual;
@@ -123,15 +126,29 @@ public class Passatger implements SubjecteObservable {
     }
 
     public void enllasarObservador(Observador o) {
+        if (o == null) return;
         observador.add(o);
+    }
+
+    public static boolean isAlreadyCridat() {
+        return cridats;
     }
 
     @Override
     public void cridar() {
+        cridats = true;
         for (Observador o : observador) {
-            if (!o.haEstatCridat(pisActual)) {
+            if (pisActual == o.getPis() && o.estaEsperant()) {
+                o.cridat(pisActual);
+            }
+            else if (!o.haEstatCridat(pisActual)) {
+                if (o.estaEsperant()) {
+                    //System.out.println("El thread " + o + " esta esperant");
+                }
+                //System.out.println("Es crida a l'ascensor " + o );
                 o.cridat(pisActual);
             }
         }
+        cridats = false;
     }
 }
