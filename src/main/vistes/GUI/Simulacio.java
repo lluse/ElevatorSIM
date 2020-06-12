@@ -83,7 +83,7 @@ public class Simulacio {
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(5);
                         lblRellotge.setText(rellotgeDinamic.incrementar());
                     } catch (InterruptedException e) {
                         e.printStackTrace();

@@ -6,6 +6,7 @@ import main.Models.Rellotge;
 import main.vistes.GUI.Simulacio;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 public class ProcesAscensor extends Thread {
 
@@ -23,18 +24,21 @@ public class ProcesAscensor extends Thread {
         index = 0;
         while (index < edifici.getPersonesList().size()) {
             boolean horaArribada = true;
+            boolean cridarAscensor = false;
             while (horaArribada) {
                 for (int i = index; i < passatgers.size() && horaArribada; ++i) {
                     Passatger passatger = passatgers.get(i);
-                    if (passatgerEsperantHora(passatger.getHoraEntrada())) {
+                    if (passatger != null && passatgerEsperantHora(passatger.getHoraEntrada())) {
+                        System.out.println("Index passatger: " + index);
                         edifici.afegeixPassatgerEsperant(passatger.getPisActual(), passatger);
                         if (!Passatger.isAlreadyCridat()) passatger.cridar();
                         ++index;
-                        System.out.println(i);
+                        Map<Integer, LinkedList<Passatger>> esperant = edifici.getGentEsperant();
                     } else horaArribada = false;
                 }
             }
         }
+        System.out.println("YA HEEE ACABADOOO");
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {

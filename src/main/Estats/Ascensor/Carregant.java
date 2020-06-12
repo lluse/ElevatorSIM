@@ -10,17 +10,18 @@ public class Carregant implements EstatAscensor {
     private Ascensor ascensor;
 
     @Override
-    public void carregar() {
+    public synchronized void carregar() {
         int i = 0;
-        while (!ascensor.estaPle() &&
-                i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
-            Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
-            if (p != null) ascensor.pujaPassatger(p);
-            ++i;
-            //ascensor.incrementaTempsAturatTotal(1);
+        if (ascensor != null) {
+            while (!ascensor.estaPle() &&
+                    i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
+                Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
+                if (p != null) ascensor.pujaPassatger(p);
+                ++i;
+                //ascensor.incrementaTempsAturatTotal(1);
+            }
+            ascensor.setEstat(new Moviment());
         }
-
-        ascensor.setEstat(new Moviment());
     }
 
     @Override

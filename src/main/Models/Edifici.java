@@ -1,6 +1,7 @@
 package main.Models;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Edifici {
     private int numpisos;
@@ -14,14 +15,18 @@ public class Edifici {
         this.numpisos = numpisos;
         this.ascensor1List = ascensor1List;
         personesList = persones_list;
-        gentEsperant = new LinkedHashMap<>();
+        gentEsperant = Collections.synchronizedMap(new HashMap<>());
     }
 
     public Edifici(int numpisos) {
         this.numpisos = numpisos;
         ascensor1List = new ArrayList<>();
         personesList = new LinkedList<>();
-        gentEsperant = new LinkedHashMap<>();
+        gentEsperant = Collections.synchronizedMap(new HashMap<>());
+    }
+
+    public Map<Integer, LinkedList<Passatger>> getGentEsperant() {
+        return gentEsperant;
     }
 
     public ArrayList<Ascensor> getAscensor1List() {
@@ -31,6 +36,8 @@ public class Edifici {
     public LinkedList<Passatger> getPersonesList() {
         return personesList;
     }
+
+
 
     public int getNumpisos() {
         return numpisos;
@@ -49,9 +56,14 @@ public class Edifici {
         return esperant;
     }
 
-    public Passatger getPassatgerEsperantAlPisAmbIndex(int pis, int index) {
+    public synchronized Passatger getPassatgerEsperantAlPisAmbIndex(int pis, int index) {
         LinkedList<Passatger> ps = getPassatgersEsperantAlPis(pis);
-        return ps.get(index);
+        if (ps.size() != index && ps.size() > index) {
+            Passatger p = ps.get(index);
+            if (p != null) return p;
+            else return null;
+        }
+        else return null;
     }
 
     public int getNumPersonesEsperantAlPis(int pis) {
@@ -60,7 +72,7 @@ public class Edifici {
         else return passatgers.size();
     }
 
-    public void afegeixPassatgerEsperant(Integer pisActual, Passatger passatger) {
+    public synchronized void afegeixPassatgerEsperant(Integer pisActual, Passatger passatger) {
         LinkedList<Passatger> currentValue = gentEsperant.get(pisActual);
         if (currentValue == null) {
             currentValue = new LinkedList<>();

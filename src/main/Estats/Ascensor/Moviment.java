@@ -32,8 +32,10 @@ public class Moviment implements EstatAscensor {
 
         ascensor.setPisActual(planta);
 
-        for (Passatger p : ascensor.getPassatgers()) {
-            p.afegirTempsEnViatge(5000 * diferencia);
+        if (ascensor.getPassatgers() != null) {
+            for (Passatger p : ascensor.getPassatgers()) {
+                p.afegirTempsEnViatge(5000 * diferencia);
+            }
         }
 
         Direccio dir = ascensor.getSentit();

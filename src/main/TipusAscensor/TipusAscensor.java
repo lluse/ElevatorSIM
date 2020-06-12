@@ -62,7 +62,7 @@ public abstract class TipusAscensor {
 
     public void afegirPlantaDesti(int planta) {
         if (planta > this.ascensor.getPisActual()) up.add(planta);
-        else if (planta < this.ascensor.getPisActual()) down.add(planta);
+        else if (planta <= this.ascensor.getPisActual()) down.add(planta);
     }
 
     protected boolean comprovaHora(Rellotge horaEntrada) {
@@ -72,8 +72,10 @@ public abstract class TipusAscensor {
         return false;
     }
 
-    public int nextFloor() {
-        if (ascensor.getSentit() == Direccio.PUJA) return up.pollFirst();
-        else return down.pollLast();
+    public synchronized int nextFloor() {
+        int direccio;
+        if (ascensor.getSentit() == Direccio.PUJA) direccio = up.pollFirst();
+        else direccio = down.pollLast();
+        return direccio;
     }
 }

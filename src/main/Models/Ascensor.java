@@ -120,7 +120,8 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
     }
 
     public void acts() {
-        tipus.act();
+        if (edifici.getTotalPersonesEsperant() > 0) tipus.act();
+        else this.esperant = true;
     }
 
     public boolean pujaPassatger(Passatger passatger) {
@@ -143,7 +144,6 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
 
     public void baixaPassatger(Passatger passatger) {
         if (passatgers.contains(passatger)) {
-            edifici.getPersonesList().remove(passatger);
             passatgers.remove(passatger);
             passatger.setAscensor(null);
             tempsEspera.afegirTempsEnViatge(passatger.getTime());
@@ -279,8 +279,14 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
         if ((dalt() && Puja()) || (baix() && !Puja()) || noExisteixTrucadaPelCami()) {
             canviaDireccio();
         }
-        int nextFloor = tipus.nextFloor();
-        estat.desplasar(nextFloor);
+        int nextFloor;
+        if ((tipus.getUp().size() > 0 && puja) || (tipus.getDown().size() > 0 && !puja)) {
+            nextFloor = tipus.nextFloor();
+            estat.desplasar(nextFloor);
+        } else {
+            System.out.println("S'han acabat les plantes JA?");
+            esperant = true;
+        }
     }
 
     public boolean comprovaHora(Rellotge horaEntrada) {
@@ -299,7 +305,8 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
         else {
             this.carregar();
         }
-        if (this.estat instanceof Lliure) {
+
+        if ((this.estat instanceof Lliure) && (pisActual != planta)) {
             this.desplasar(planta);
         }
     }
