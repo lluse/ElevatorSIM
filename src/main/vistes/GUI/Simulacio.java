@@ -44,7 +44,7 @@ public class Simulacio {
         afegirImatgesAscensor();
         afegirTipusAscensor();
         executar.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/icons_play.png")));
-        rellotgeDinamic = new Rellotge(8,54,55);
+        rellotgeDinamic = new Rellotge(11,29,55);
         lblRellotge.setText(rellotgeDinamic.toString());
         executar.addActionListener(new ActionListener() {
             @Override

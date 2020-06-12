@@ -43,10 +43,10 @@ public class Edifici {
         return numpisos;
     }
 
-    public boolean totsElsPassatgersHanArribat() {
+    public synchronized boolean totsElsPassatgersHanArribat() {
         for (int i = 0; i < gentEsperant.size(); ++i) {
             LinkedList<Passatger> l = gentEsperant.get(i);
-            if (l.size() > 0) return false;
+            if (l != null && l.size() > 0) return false;
         }
         return true;
     }
@@ -56,14 +56,23 @@ public class Edifici {
         return esperant;
     }
 
-    public synchronized Passatger getPassatgerEsperantAlPisAmbIndex(int pis, int index) {
+    public Passatger getPassatgerEsperantAlPisAmbIndex(int pis, int index) {
         LinkedList<Passatger> ps = getPassatgersEsperantAlPis(pis);
-        if (ps.size() != index && ps.size() > index) {
-            Passatger p = ps.get(index);
-            if (p != null) return p;
-            else return null;
+        synchronized(this) {
+            if (ps.size() > 0 && ps.size() != index && ps.size() > index) {
+                System.out.println("En el thread: " + Thread.currentThread()
+                        + " el numero de gent que espera es: " + ps.size() + " en la planta " + pis
+                        + " i l'index del passatger es " + index);
+
+                Passatger p;
+                if (ps.size() > 0 && ps.size() != index) p = ps.get(index);
+                else p = null;
+
+
+                if (p != null) return p;
+                else return null;
+            } else return null;
         }
-        else return null;
     }
 
     public int getNumPersonesEsperantAlPis(int pis) {

@@ -10,13 +10,16 @@ public class Carregant implements EstatAscensor {
     private Ascensor ascensor;
 
     @Override
-    public synchronized void carregar() {
+    public synchronized void carregar() throws InterruptedException {
         int i = 0;
         if (ascensor != null) {
             while (!ascensor.estaPle() &&
                     i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
                 Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
-                if (p != null) ascensor.pujaPassatger(p);
+                if (p != null) {
+                    ascensor.pujaPassatger(p);
+                    Thread.sleep(1);
+                }
                 ++i;
                 //ascensor.incrementaTempsAturatTotal(1);
             }

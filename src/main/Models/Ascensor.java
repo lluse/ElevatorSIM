@@ -135,8 +135,8 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
             passatger.resetTime();
             tipus.afegirPlantaDesti(passatger.getPisDesitjat());
             System.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
-                    + " En l'ascensor: " + getId() + ", un passatger puja al pis "
-                    + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
+                   + " En l'ascensor: " + getId() + ", un passatger puja al pis "
+                   + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
 
             return true;
         }
@@ -282,7 +282,11 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
         int nextFloor;
         if ((tipus.getUp().size() > 0 && puja) || (tipus.getDown().size() > 0 && !puja)) {
             nextFloor = tipus.nextFloor();
-            estat.desplasar(nextFloor);
+            try {
+                estat.desplasar(nextFloor);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
             System.out.println("S'han acabat les plantes JA?");
             esperant = true;
@@ -348,17 +352,29 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
 
     @Override
     public void carregar() {
-        this.estat.carregar();
+        try {
+            this.estat.carregar();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void descarregar() {
-        this.estat.descarregar();
+        try {
+            this.estat.descarregar();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void desplasar(int planta) {
-        this.estat.desplasar(planta);
+        try {
+            this.estat.desplasar(planta);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

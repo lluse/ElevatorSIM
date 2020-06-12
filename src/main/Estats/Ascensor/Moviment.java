@@ -27,7 +27,7 @@ public class Moviment implements EstatAscensor {
     }
 
     @Override
-    public void desplasar(int planta) {
+    public void desplasar(int planta) throws InterruptedException {
         int diferencia = Math.abs(planta - ascensor.getPisActual());
 
         ascensor.setPisActual(planta);
@@ -37,6 +37,8 @@ public class Moviment implements EstatAscensor {
                 p.afegirTempsEnViatge(5000 * diferencia);
             }
         }
+
+        Thread.sleep(5*diferencia);
 
         Direccio dir = ascensor.getSentit();
         if (dir == Direccio.PUJA) ascensor.getTipus().getUp().remove(planta);

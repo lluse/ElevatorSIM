@@ -111,30 +111,30 @@ public class MainController {
             Passatger passatgerAnada, passatgerTornada;
 
             if (i < (numPersones/5)) {
-                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(8, 55));
-                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(8 + 3, 30));
+                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(8, 55));
+                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(8 + 3, 30));
             }
             else if ((numPersones/5) < i && i < (numPersones/5) * 2) {
-                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 0));
-                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 0));
+                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 0));
+                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 0));
             }
             else if ((numPersones/5) * 2 < i && i < (numPersones/5) * 3) {
-                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 30));
-                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 30));
+                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 30));
+                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 30));
             }
 
             else if ((numPersones/5) * 3 < i && i < (numPersones/5) * 4) {
-                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 0));
-                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 0));
+                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 0));
+                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 0));
             }
 
             else {
-                passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 30));
-                //passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 30));
+                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 30));
+                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 30));
             }
 
-            passatgers.add(passatgerAnada);
-            //passatgers.add(passatgerTornada);
+            //passatgers.add(passatgerAnada);
+            passatgers.add(passatgerTornada);
         }
 
         return passatgers;

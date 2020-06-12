@@ -24,16 +24,19 @@ public class ProcesAscensor extends Thread {
         index = 0;
         while (index < edifici.getPersonesList().size()) {
             boolean horaArribada = true;
+            int stop = 0;
             boolean cridarAscensor = false;
             while (horaArribada) {
                 for (int i = index; i < passatgers.size() && horaArribada; ++i) {
                     Passatger passatger = passatgers.get(i);
                     if (passatger != null && passatgerEsperantHora(passatger.getHoraEntrada())) {
-                        System.out.println("Index passatger: " + index);
+                        //System.out.println("Index passatger: " + index);
                         edifici.afegeixPassatgerEsperant(passatger.getPisActual(), passatger);
                         if (!Passatger.isAlreadyCridat()) passatger.cridar();
                         ++index;
+                        ++stop;
                         Map<Integer, LinkedList<Passatger>> esperant = edifici.getGentEsperant();
+                        if (stop > 50) horaArribada = false;
                     } else horaArribada = false;
                 }
             }

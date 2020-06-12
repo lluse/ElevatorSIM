@@ -10,8 +10,9 @@ public class Descarregant implements EstatAscensor {
     public void carregar() { }
 
     @Override
-    public void descarregar() {
+    public void descarregar() throws InterruptedException {
         ascensor.baixaPassatgersQueHanArribat();
+        Thread.sleep(5);
         int pis = ascensor.getPisActual();
         ascensor.setEstat(new Lliure());
         if (ascensor.getEdifici().getNumPersonesEsperantAlPis(pis) == 0) {

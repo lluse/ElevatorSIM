@@ -4,9 +4,9 @@ import main.Models.Ascensor;
 
 public interface EstatAscensor {
 
-    void carregar();
-    void descarregar();
-    void desplasar(int planta);
+    void carregar() throws InterruptedException;
+    void descarregar() throws InterruptedException;
+    void desplasar(int planta) throws InterruptedException;
 
 
     void setAscensor(Ascensor ascensor);
