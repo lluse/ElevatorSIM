@@ -31,9 +31,14 @@ public class Simulacio {
     private JPanel infoPanel;
     private JButton executar;
     public JLabel lblRellotge;
+    private JPanel gent1;
+    private JPanel gent2;
+    private JPanel gent3;
+    private JPanel gent4;
 
     SimuladorFactory sim = new SimuladorFactory();
     public static volatile Rellotge rellotgeDinamic;
+    public static volatile Boolean go;
 
     public static Simulacio getInstance() {
         if (instance == null) return new Simulacio();
@@ -44,14 +49,23 @@ public class Simulacio {
         afegirImatgesAscensor();
         afegirTipusAscensor();
         executar.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/icons_play.png")));
-        rellotgeDinamic = new Rellotge(11,29,55);
+        rellotgeDinamic = new Rellotge(7,00,00);
         lblRellotge.setText(rellotgeDinamic.toString());
+        go = true;
         executar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 start_simulation();
             }
         });
+    }
+
+    public static void showStats() {
+        JFrame jFrame = new JFrame("Panel de simulació");
+        jFrame.setContentPane(new GuardarStats().panel_stats);
+        jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        jFrame.pack();
+        jFrame.setVisible(true);
     }
 
     private void start_simulation() {
@@ -81,7 +95,7 @@ public class Simulacio {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (go) {
                     try {
                         Thread.sleep(5);
                         lblRellotge.setText(rellotgeDinamic.incrementar());

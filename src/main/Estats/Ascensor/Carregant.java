@@ -4,6 +4,9 @@ import main.Controller.ProcesAscensor;
 import main.Estats.Ascensor.EstatAscensor;
 import main.Models.Ascensor;
 import main.Models.Passatger;
+import main.TipusAscensor.ascensors.Imparell;
+import main.TipusAscensor.ascensors.Lineal;
+import main.TipusAscensor.ascensors.Parell;
 
 public class Carregant implements EstatAscensor {
 
@@ -15,15 +18,20 @@ public class Carregant implements EstatAscensor {
         if (ascensor != null) {
             while (!ascensor.estaPle() &&
                     i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual())) {
-                Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
-                if (p != null) {
-                    ascensor.pujaPassatger(p);
-                    Thread.sleep(1);
+                if ((ascensor.getTipus() instanceof Parell && ascensor.getPisActual() % 2 == 0) ||
+                        (ascensor.getTipus() instanceof Imparell && (ascensor.getPisActual() % 2 != 0
+                        || ascensor.getPisActual() == 0)) ||
+                        (ascensor.getTipus() instanceof Lineal)) {
+                    Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
+                    if (p != null) {
+                        ascensor.pujaPassatger(p);
+                        Thread.sleep(1);
+                    }
                 }
                 ++i;
-                //ascensor.incrementaTempsAturatTotal(1);
             }
-            ascensor.setEstat(new Moviment());
+            if (ascensor.getPassatgers().size() > 0) ascensor.setEstat(new Moviment());
+            else ascensor.setEstat(new Lliure());
         }
     }
 

@@ -22,7 +22,7 @@ public class ProcesAscensor extends Thread {
     @Override
     public void run() {
         index = 0;
-        while (index < edifici.getPersonesList().size()) {
+        while (index < edifici.getPersonesList().size() - 1) {
             boolean horaArribada = true;
             int stop = 0;
             boolean cridarAscensor = false;
@@ -42,12 +42,8 @@ public class ProcesAscensor extends Thread {
             }
         }
         System.out.println("YA HEEE ACABADOOO");
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        super.run();
+        Simulacio.go = false;
+        Simulacio.showStats();
     }
 
     public boolean passatgerEsperantHora(Rellotge rellotge) {

@@ -24,32 +24,12 @@ public class Parell extends TipusAscensor {
     public void act() {
         if (!ascensor.getEdifici().totsElsPassatgersHanArribat()
                 && (ascensor.getEdifici().getTotalPersonesEsperant() != 0 || ascensor.getNumPassatgersAscensor() != 0)) {
-
-            ascensor.baixaPassatgersQueHanArribat();
-
-            if (!ascensor.estaPle()) {
-                int i = 0;
-                while (!ascensor.estaPle() &&
-                        i < ascensor.getEdifici().getNumPersonesEsperantAlPis(ascensor.getPisActual()) &&
-                        comprovaHora(ascensor.getEdifici()
-                                .getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i).getHoraEntrada())) {
-                    if (ascensor.getPassatgers().get(i).getPisDesitjat() % 2 == 0) { //Comprovem que va a un pis parell
-                        Passatger p = ascensor.getEdifici().getPassatgerEsperantAlPisAmbIndex(ascensor.getPisActual(), i);
-                        if (p != null) p.potPujarAlAscensor(ascensor);
-                    }
-                    ++i;
-                }
+            ascensor.descarregar();
+            if (ascensor.pisConteGentEsperant(ascensor.getPisActual())) {
+                ascensor.carregar();
             }
-
-            ascensor.incrementaTempsAturatTotal(1);
-
-            if ((ascensor.dalt() && ascensor.Puja()) || (ascensor.baix() && !ascensor.Puja()) ||
-                    (ascensor.noExisteixTrucadaPelCami())) {
-                ascensor.canviaDireccio();
-            }
-
-            if (ascensor.getTempsAturatTotal() >= ascensor.getTempsParada()) ascensor.activarMoviment();
         } else {
+            this.ascensor.setEsperant(true);
         }
     }
 

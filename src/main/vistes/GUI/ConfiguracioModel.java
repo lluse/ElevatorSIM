@@ -17,24 +17,35 @@ public class ConfiguracioModel {
     private static final int MAX_PERSONES = 2000;
     private static final int MAX_PERSONES_PER_ASCENSOR = 11;
 
+    private static final int MIN_HORA_INI = 8;
+    private static final int MAX_HORA_FI = 18;
+
+    private static final int MIN_MINUTS = 0;
+    private static final int MAX_MINTUS = 59;
+
     private static int num_ascensors_final;
     private static int num_persones_final;
     private static int num_plantes_final;
+    private static int hora_entrada;
+    private static int hora_sortida;
+    private static int minuts;
 
-    private JTextArea númeroDePlantesATextArea;
     protected JSlider num_plantes_slider;
-    private JTextArea númeroDAscensorsATextArea;
     protected JSlider num_ascensors_slider;
     private JLabel num_plantes_label;
-    protected JTextArea númeroDePersonesTotalsTextArea;
     protected JSpinner num_persones_spinner;
     private JLabel num_persones_label;
     private JLabel num_ascensors_label;
     private JButton iniciarSimulacióButton;
 
     public JPanel panel_configuracio;
+    private JSpinner horaIni_spinner;
+    private JSpinner minIni_spinner;
+    private JSpinner horaFi_spinner;
+    private JSpinner minFi_spinner;
 
     public ConfiguracioModel() {
+
         num_plantes_label.setText(String.valueOf((int)MAX_PLANTES/2));
 
         num_plantes_slider.setValue((int)MAX_PLANTES/2);
@@ -52,10 +63,26 @@ public class ConfiguracioModel {
         num_persones_label.setText(String.valueOf((int) MAX_PERSONES/2));
 
         num_persones_spinner.setValue((int)MAX_PERSONES/2);
-        SpinnerModel spinnerModel = new SpinnerNumberModel((int)MAX_PERSONES/2,
+        SpinnerModel spinnerModelPersones = new SpinnerNumberModel((int)MAX_PERSONES/2,
                 MIN_PERSONES, MAX_PERSONES, 10);
-        num_persones_spinner.setModel(spinnerModel);
+        num_persones_spinner.setModel(spinnerModelPersones);
         num_persones_spinner.addChangeListener(new SpinnerUpdate(num_persones_label));
+
+        horaIni_spinner.setValue((int) MIN_HORA_INI);
+        SpinnerModel spinnerModelHoraIni = new SpinnerNumberModel((int)MIN_HORA_INI,
+                MIN_HORA_INI, MAX_HORA_FI, 1);
+        horaIni_spinner.setModel(spinnerModelHoraIni);
+
+        horaFi_spinner.setValue((int) MAX_HORA_FI);
+        SpinnerModel spinnerModelHoraFi = new SpinnerNumberModel((MAX_HORA_FI + MIN_HORA_INI)/2,
+                (int) MIN_HORA_INI + 1, MAX_HORA_FI, 1);
+        horaFi_spinner.setModel(spinnerModelHoraFi);
+
+        minIni_spinner.setValue(0);
+        minFi_spinner.setValue(30);
+        SpinnerModel spinnerMinuts = new SpinnerNumberModel(0, MIN_MINUTS, MAX_MINTUS, 5);
+        minIni_spinner.setModel(spinnerMinuts);
+        minFi_spinner.setModel(spinnerMinuts);
 
         iniciarSimulacióButton.addActionListener(new ActionListener() {
             @Override
@@ -63,12 +90,25 @@ public class ConfiguracioModel {
                 num_ascensors_final = num_ascensors_slider.getValue();
                 num_persones_final = Integer.parseInt(num_persones_label.getText());
                 num_plantes_final = num_plantes_slider.getValue();
+                hora_entrada = (int) horaIni_spinner.getValue();
+                hora_sortida = (int) horaFi_spinner.getValue();
+                minuts = (int) minIni_spinner.getValue();
 
-                JFrame jFrame = new JFrame("Panel de simulació");
-                jFrame.setContentPane(new SeleccioAscensors().seleccio);
-                jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-                jFrame.pack();
-                jFrame.setVisible(true);
+                try {
+                    if (!horesCorrectes((int) horaFi_spinner.getValue(), (int) horaIni_spinner.getValue(),
+                            (int) minIni_spinner.getValue(), (int) minFi_spinner.getValue()))  {
+                        throw new IllegalArgumentException("Les hores estan malament");
+                    } else {
+                        JFrame jFrame = new JFrame("Panel de simulació");
+                        jFrame.setContentPane(new SeleccioAscensors().seleccio);
+                        jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                        jFrame.pack();
+                        jFrame.setVisible(true);
+                    }
+                } catch (IllegalArgumentException i) {
+                    JOptionPane.showMessageDialog(null, "Hi ha d'haver un interval de dos " +
+                            "hores mínim entre la hora inicial i la final");
+                }
             }
         });
     }
@@ -83,5 +123,22 @@ public class ConfiguracioModel {
 
     public static int getNum_plantes_final() {
         return num_plantes_final;
+    }
+
+    public static int getHora_entrada() {
+        return hora_entrada;
+    }
+
+    public static int getHora_sortida() {
+        return hora_sortida;
+    }
+
+    public static int getMinuts() {
+        return minuts;
+    }
+
+    private boolean horesCorrectes(int horaMax, int horaMin, int minMax, int minMin) {
+        if (horaMin + 2 <= horaMax) return true;
+        else return false;
     }
 }

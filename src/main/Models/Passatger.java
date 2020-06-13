@@ -3,6 +3,9 @@ package main.Models;
 import main.Controller.MainController;
 import main.ObservadorAscensor.Observador;
 import main.ObservadorAscensor.SubjecteObservable;
+import main.TipusAscensor.ascensors.Imparell;
+import main.TipusAscensor.ascensors.Lineal;
+import main.TipusAscensor.ascensors.Parell;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,7 +39,6 @@ public class Passatger implements SubjecteObservable {
         this.horaEntrada = horaEntrada;
 
         ascensor = null;
-        resetTime();
     }
 
     public boolean potPujarAlAscensor(Ascensor ascensor) {
@@ -75,8 +77,26 @@ public class Passatger implements SubjecteObservable {
         return tempsViatge/1000;
     }
 
+    public void setTempsEspera() {
+        this.tempsEspera = getTime();
+        resetTempsInici();
+    }
+
+    public void setTempsViatge() {
+        this.tempsViatge = getTime();
+        resetTime();
+    }
+
+    public void setTempsInici(long tempsInici) {
+        this.tempsInici = System.currentTimeMillis();
+    }
+
     public void afegirTempsEnViatge(long temps) {
         tempsViatge += temps;
+    }
+
+    public void resetTempsInici() {
+        tempsInici = System.currentTimeMillis();
     }
 
     public void resetTime() {
@@ -138,10 +158,11 @@ public class Passatger implements SubjecteObservable {
     public void cridar() {
         cridats = true;
         for (Observador o : observador) {
-            if (pisActual == o.getPis() && o.estaEsperant()) {
+            if (pisActual == o.getPis() && o.estaEsperant() && comprovaPisos(o, pisActual)) {
+                resetTime();
                 o.cridat(pisActual);
             }
-            else if (!o.haEstatCridat(pisActual)) {
+            else if (!o.haEstatCridat(pisActual) && comprovaPisos(o, pisActual)) {
                 if (o.estaEsperant()) {
                     //System.out.println("El thread " + o + " esta esperant");
                 }
@@ -150,5 +171,12 @@ public class Passatger implements SubjecteObservable {
             }
         }
         cridats = false;
+    }
+
+    private boolean comprovaPisos(Observador o, int pisActual) {
+        if (o.getTipus() instanceof Lineal) return true;
+        else if ((o.getTipus() instanceof Imparell && pisActual % 2 != 0) || (pisActual == 0)) return true;
+        else if (o.getTipus() instanceof Parell && pisActual % 2 == 0) return true;
+        else return false;
     }
 }

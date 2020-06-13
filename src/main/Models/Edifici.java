@@ -61,8 +61,7 @@ public class Edifici {
         synchronized(this) {
             if (ps.size() > 0 && ps.size() != index && ps.size() > index) {
                 System.out.println("En el thread: " + Thread.currentThread()
-                        + " el numero de gent que espera es: " + ps.size() + " en la planta " + pis
-                        + " i l'index del passatger es " + index);
+                        + " el numero de gent que espera es: " + ps.size());
 
                 Passatger p;
                 if (ps.size() > 0 && ps.size() != index) p = ps.get(index);

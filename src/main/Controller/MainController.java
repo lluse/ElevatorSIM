@@ -6,8 +6,6 @@ import main.TipusAscensor.ascensors.Imparell;
 import main.TipusAscensor.ascensors.Lineal;
 import main.TipusAscensor.ascensors.Parell;
 import main.vistes.GUI.ConfiguracioModel;
-import main.vistes.GUI.SeleccioAscensors;
-import main.vistes.GUI.Simulacio;
 
 import java.util.*;
 
@@ -95,9 +93,12 @@ public class MainController {
             ascensor.setEdifici(edifici);
         }
 
+/*
         passatgers.forEach((v) -> {
-            System.out.println(v.getPisDesitjat() + " " + v.getHoraEntrada().toString());
+            System.out.println("Pis Actual: " + v.getPisActual() + ", Pis Desitjat: " + v.getPisDesitjat() + ". HORA: "
+                    + v.getHoraEntrada().toString());
         });
+ */
 
 
     }
@@ -108,33 +109,30 @@ public class MainController {
         for (int i = 0; i < numPersones; ++i) {
             int pisDesitjat = 1 + (int) Math.floor(Math.random()*ConfiguracioModel.getNum_plantes_final());
 
-            Passatger passatgerAnada, passatgerTornada;
+            Passatger passatgerAnada, passatgerTornada, passatgerEsporadic;
 
-            if (i < (numPersones/5)) {
-                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(8, 55));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(8 + 3, 30));
-            }
-            else if ((numPersones/5) < i && i < (numPersones/5) * 2) {
-                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 0));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 0));
-            }
-            else if ((numPersones/5) * 2 < i && i < (numPersones/5) * 3) {
-                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(9, 30));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(9 + 3, 30));
-            }
+            int horaEntrada = ConfiguracioModel.getHora_entrada();
+            int horaSortida = ConfiguracioModel.getHora_sortida();
+            int minuts = ConfiguracioModel.getMinuts();
+            //System.out.println("Hora entrada");
+            passatgerAnada = new Passatger(0, pisDesitjat, obtenirHora(horaEntrada, minuts));
+            //System.out.println("Hora sortida");
+            passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHora(horaSortida, minuts));
 
-            else if ((numPersones/5) * 3 < i && i < (numPersones/5) * 4) {
-                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 0));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 0));
+            if (i % 5 == 0) {
+                int pisInici = pisDesitjat;
+                int pisDesti = (int) Math.floor(Math.random()*ConfiguracioModel.getNum_plantes_final());
+                while (pisInici == pisDesti) {
+                    pisDesti = (int) Math.floor(Math.random()*ConfiguracioModel.getNum_plantes_final());
+                }
+                int hora = (horaEntrada + horaSortida)/2;
+                passatgerEsporadic = new Passatger(pisInici, pisDesti, obtenirHora(hora, minuts));
             }
+            else passatgerEsporadic = null;
 
-            else {
-                //passatgerAnada = new Passatger(0, pisDesitjat, obtenirHoraAnada(10, 30));
-                passatgerTornada = new Passatger(pisDesitjat, 0, obtenirHoraTornada(10 + 3, 30));
-            }
-
-            //passatgers.add(passatgerAnada);
+            passatgers.add(passatgerAnada);
             passatgers.add(passatgerTornada);
+            if (passatgerEsporadic != null) passatgers.add(passatgerEsporadic);
         }
 
         return passatgers;
@@ -181,16 +179,15 @@ public class MainController {
         return tp;
     }
 
-    private Rellotge obtenirHoraAnada(int hora, int minuts) {
+    private Rellotge obtenirHora(int hora, int minuts) {
         Random aleatori = new Random();
-        int numAleatori = minuts + aleatori.nextInt(60 - minuts);
-        return new Rellotge(hora, numAleatori, 0);
+        int num = minuts + calculaHora(hora, minuts);
+        return new Rellotge(num / 60, num % 60, 0);
     }
 
-    private Rellotge obtenirHoraTornada(int hora, int minuts) {
-        Random aleatori = new Random();
-        int numAleatoriH = hora + aleatori.nextInt(19 - hora);
-        int numAleatoriM = minuts + aleatori.nextInt(45 - minuts);
-        return new Rellotge(numAleatoriH, numAleatoriM, 0);
+    private int calculaHora(int hora, int minuts) {
+        Random random = new Random();
+        double aleatori = (random.nextGaussian()*20 + (60*hora));
+        return (int) aleatori;
     }
 }

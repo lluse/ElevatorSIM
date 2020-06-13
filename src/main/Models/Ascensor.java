@@ -132,11 +132,12 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
             passatger.setAscensor(this);
             //tempsEspera.afegirTempsEnEspera(passatger.getTime());
             edifici.esborraPassatgerEsperant(passatger.pisActual, passatger);
-            passatger.resetTime();
+            passatger.setTempsEspera(); //guardem el temps que s'ha estat esperant
+            tempsEspera.afegirTempsEnEspera(passatger.getTempsEspera());
             tipus.afegirPlantaDesti(passatger.getPisDesitjat());
-            System.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
-                   + " En l'ascensor: " + getId() + ", un passatger puja al pis "
-                   + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
+            //.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
+            //       + " En l'ascensor: " + getId() + ", un passatger puja al pis "
+            //       + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
 
             return true;
         }
@@ -146,7 +147,8 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
         if (passatgers.contains(passatger)) {
             passatgers.remove(passatger);
             passatger.setAscensor(null);
-            tempsEspera.afegirTempsEnViatge(passatger.getTime());
+            passatger.setTempsViatge(); //guardem el temps que ha estat de viatge
+            tempsEspera.afegirTempsEnViatge(passatger.getTempsViatge());
             incrementaTempsParada(5);
             tipus.baixaPassatger(passatger);
         }
@@ -195,6 +197,7 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
         this.edifici = edifici;
     }
 
+    @Override
     public TipusAscensor getTipus() {
         return tipus;
     }
@@ -288,7 +291,6 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("S'han acabat les plantes JA?");
             esperant = true;
         }
     }
