@@ -72,7 +72,8 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
         this.estat.setAscensor(this);
     }
 
-    public long getId() {
+    @Override
+    public int getId() {
         return id;
     }
     public void setId(int id) {
@@ -132,12 +133,13 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
             passatger.setAscensor(this);
             //tempsEspera.afegirTempsEnEspera(passatger.getTime());
             edifici.esborraPassatgerEsperant(passatger.pisActual, passatger);
+            passatger.setHoraEntradaAscensor();
             passatger.setTempsEspera(); //guardem el temps que s'ha estat esperant
             tempsEspera.afegirTempsEnEspera(passatger.getTempsEspera());
             tipus.afegirPlantaDesti(passatger.getPisDesitjat());
-            //.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
-            //       + " En l'ascensor: " + getId() + ", un passatger puja al pis "
-            //       + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
+            System.out.println("A les " + Simulacio.rellotgeDinamic.getHora() + ":" + Simulacio.rellotgeDinamic.getMinuts()
+                   + " En l'ascensor: " + getId() + ", un passatger puja al pis "
+                   + passatger.getPisActual() + " -> " + passatger.getPisDesitjat());
 
             return true;
         }
@@ -146,8 +148,11 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
     public void baixaPassatger(Passatger passatger) {
         if (passatgers.contains(passatger)) {
             passatgers.remove(passatger);
+            passatger.setNumAscensor(passatger.getAscensor().getId());
             passatger.setAscensor(null);
+            passatger.setHoraBaixadaAscensor();
             passatger.setTempsViatge(); //guardem el temps que ha estat de viatge
+            System.out.println("Ha estat de viatge: " + passatger.getTempsViatge());
             tempsEspera.afegirTempsEnViatge(passatger.getTempsViatge());
             incrementaTempsParada(5);
             tipus.baixaPassatger(passatger);
@@ -305,7 +310,7 @@ public class Ascensor implements Observador, EstatAscensor, Runnable {
     @Override
     public void cridat(int planta) {
         esperant = false;
-
+        System.out.println(" a la planta " + planta);
         if (planta < pisActual) tipus.getDown().add(planta);
         else if (planta > pisActual) tipus.getUp().add(planta);
         else {

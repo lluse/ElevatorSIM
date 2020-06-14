@@ -31,12 +31,13 @@ public class Moviment implements EstatAscensor {
         int diferencia = Math.abs(planta - ascensor.getPisActual());
 
         ascensor.setPisActual(planta);
-
+/*
         if (ascensor.getPassatgers() != null) {
             for (Passatger p : ascensor.getPassatgers()) {
-                p.afegirTempsEnViatge(5000 * diferencia);
+                p.afegirTempsEnViatge(5 * diferencia);
             }
         }
+ */
 
         Thread.sleep(5*diferencia);
 

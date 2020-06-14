@@ -10,9 +10,11 @@ import java.util.Map;
 
 public class ProcesAscensor extends Thread {
 
-    Edifici edifici;
+    private static Edifici edifici;
     LinkedList<Passatger> passatgers;
     private volatile static int index;
+
+    private static int gentEsperant;
 
     public ProcesAscensor(Edifici edifici, LinkedList<Passatger> passatgers) {
         this.edifici = edifici;
@@ -31,20 +33,21 @@ public class ProcesAscensor extends Thread {
                     Passatger passatger = passatgers.get(i);
                     if (passatger != null && passatgerEsperantHora(passatger.getHoraEntrada())) {
                         //System.out.println("Index passatger: " + index);
+                        passatger.setTempsInici();
                         edifici.afegeixPassatgerEsperant(passatger.getPisActual(), passatger);
                         if (!Passatger.isAlreadyCridat()) passatger.cridar();
                         ++index;
                         ++stop;
                         Map<Integer, LinkedList<Passatger>> esperant = edifici.getGentEsperant();
-                        if (stop > 50) horaArribada = false;
+                        if (stop > 30) horaArribada = false;
                     } else horaArribada = false;
                 }
             }
         }
-        System.out.println("YA HEEE ACABADOOO");
         Simulacio.go = false;
         Simulacio.showStats();
     }
+
 
     public boolean passatgerEsperantHora(Rellotge rellotge) {
         //System.out.println("Ascensor " + ascensor.getId() + " Rellotge entrada passatgers: "

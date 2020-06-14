@@ -6,6 +6,7 @@ import main.ObservadorAscensor.SubjecteObservable;
 import main.TipusAscensor.ascensors.Imparell;
 import main.TipusAscensor.ascensors.Lineal;
 import main.TipusAscensor.ascensors.Parell;
+import main.vistes.GUI.Simulacio;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,6 +27,10 @@ public class Passatger implements SubjecteObservable {
     protected int pisDesitjat;
 
     private Rellotge horaEntrada;
+    private Rellotge horaEntradaAscensor;
+    private Rellotge horaBaixadaAscensor;
+
+    private int numAscensor;
 
     private static volatile boolean cridats;
 
@@ -37,6 +42,11 @@ public class Passatger implements SubjecteObservable {
         this.pisActual = pisActual;
         this.pisDesitjat = pisDesitjat;
         this.horaEntrada = horaEntrada;
+
+        this.tempsEspera = 0;
+        this.tempsViatge = 0;
+
+        numAscensor = -1;
 
         ascensor = null;
     }
@@ -66,15 +76,15 @@ public class Passatger implements SubjecteObservable {
     }
 
     public long getTime() {
-        return ((System.currentTimeMillis() - tempsInici) / 1000);
+        return ((System.currentTimeMillis() - tempsInici));
     }
 
     public long getTempsEspera() {
-        return tempsEspera/1000;
+        return tempsEspera;
     }
 
     public long getTempsViatge() {
-        return tempsViatge/1000;
+        return tempsViatge;
     }
 
     public void setTempsEspera() {
@@ -84,10 +94,10 @@ public class Passatger implements SubjecteObservable {
 
     public void setTempsViatge() {
         this.tempsViatge = getTime();
-        resetTime();
+        resetTempsInici();
     }
 
-    public void setTempsInici(long tempsInici) {
+    public void setTempsInici() {
         this.tempsInici = System.currentTimeMillis();
     }
 
@@ -111,6 +121,32 @@ public class Passatger implements SubjecteObservable {
 
     public void setHoraEntrada(Rellotge horaEntrada) {
         this.horaEntrada = horaEntrada;
+    }
+
+    public Rellotge getHoraEntradaAscensor() {
+        return horaEntradaAscensor;
+    }
+
+    public void setHoraEntradaAscensor() {
+        this.horaEntradaAscensor = new Rellotge(Simulacio.rellotgeDinamic.getHora(), Simulacio.rellotgeDinamic.getMinuts(),
+                Simulacio.rellotgeDinamic.getSegons());
+    }
+
+    public Rellotge getHoraBaixadaAscensor() {
+        return horaBaixadaAscensor;
+    }
+
+    public void setHoraBaixadaAscensor() {
+        this.horaBaixadaAscensor = new Rellotge(Simulacio.rellotgeDinamic.getHora(), Simulacio.rellotgeDinamic.getMinuts(),
+                Simulacio.rellotgeDinamic.getSegons());
+    }
+
+    public int getNumAscensor() {
+        return numAscensor;
+    }
+
+    public void setNumAscensor(int numAscensor) {
+        this.numAscensor = numAscensor;
     }
 
     public boolean haArribat() {
@@ -159,14 +195,11 @@ public class Passatger implements SubjecteObservable {
         cridats = true;
         for (Observador o : observador) {
             if (pisActual == o.getPis() && o.estaEsperant() && comprovaPisos(o, pisActual)) {
-                resetTime();
                 o.cridat(pisActual);
             }
             else if (!o.haEstatCridat(pisActual) && comprovaPisos(o, pisActual)) {
-                if (o.estaEsperant()) {
-                    //System.out.println("El thread " + o + " esta esperant");
-                }
-                //System.out.println("Es crida a l'ascensor " + o );
+
+                System.out.print("Es crida a l'ascensor " + o.getId() );
                 o.cridat(pisActual);
             }
         }

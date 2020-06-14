@@ -93,12 +93,10 @@ public class MainController {
             ascensor.setEdifici(edifici);
         }
 
-/*
         passatgers.forEach((v) -> {
             System.out.println("Pis Actual: " + v.getPisActual() + ", Pis Desitjat: " + v.getPisDesitjat() + ". HORA: "
                     + v.getHoraEntrada().toString());
         });
- */
 
 
     }

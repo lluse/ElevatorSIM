@@ -97,6 +97,14 @@ public class Edifici {
         return num;
     }
 
+    public int getTotalEsperant() {
+        int num = 0;
+        for (int i = 0; i < gentEsperant.size(); ++i) {
+            num += gentEsperant.get(i).size();
+        }
+        return num;
+    }
+
     private LinkedList<Passatger> getPassatgersQueHanArribatAlPis(int pisActual) {
         LinkedList<Passatger> list = new LinkedList<>();
         for (Passatger p : personesList) {

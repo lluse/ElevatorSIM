@@ -11,6 +11,8 @@ public interface Observador {
 
     int getPis();
 
+    int getId();
+
     TipusAscensor getTipus();
 
     //boolean noHaEstatCridatEnTotEdifici();

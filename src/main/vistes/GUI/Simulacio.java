@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class Simulacio {
 
     public static Simulacio instance = getInstance();
+    public JButton guardarStatsButton;
 
     private JPanel ascensor1;
     private JPanel ascensor2;
@@ -31,14 +32,13 @@ public class Simulacio {
     private JPanel infoPanel;
     private JButton executar;
     public JLabel lblRellotge;
-    private JPanel gent1;
-    private JPanel gent2;
-    private JPanel gent3;
-    private JPanel gent4;
 
     SimuladorFactory sim = new SimuladorFactory();
+
     public static volatile Rellotge rellotgeDinamic;
     public static volatile Boolean go;
+
+    private JLabel estatPrograma;
 
     public static Simulacio getInstance() {
         if (instance == null) return new Simulacio();
@@ -48,7 +48,7 @@ public class Simulacio {
     public Simulacio() {
         afegirImatgesAscensor();
         afegirTipusAscensor();
-        executar.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/icons_play.png")));
+        executar.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/play.png")));
         rellotgeDinamic = new Rellotge(7,00,00);
         lblRellotge.setText(rellotgeDinamic.toString());
         go = true;
@@ -72,7 +72,7 @@ public class Simulacio {
         //rellotgeDinamic.getHl().start();
         executar.setEnabled(false);
         iniciarRellotgeActual();
-
+        if (go) estatPrograma.setText("Executant...");
         try {
             MainController.getInstance().start_simulation(ConfiguracioModel.getNum_plantes_final(),
                     ConfiguracioModel.getNum_ascensors_final(), ConfiguracioModel.getNum_persones_final(),
@@ -103,6 +103,7 @@ public class Simulacio {
                         e.printStackTrace();
                     }
                 }
+                if (!go) estatPrograma.setText("Ha acabat la simulacio");
             }
         };
         Thread hilo = new Thread(runnable);
@@ -118,7 +119,9 @@ public class Simulacio {
         ascensor3Image.setText("");
         ascensor4Image.setIcon(new ImageIcon(Simulacio.class.getResource("../imatges/ascensor.png")));
         ascensor4Image.setText("");
+
     }
+
 
     private void afegirTipusAscensor() {
         tipus1.setText("Tipus: " + SeleccioAscensors.tipus1);

@@ -75,14 +75,13 @@ public class Lineal extends TipusAscensor {
 
     @Override
     public void baixaPassatger(Passatger passatger) {
-        //System.out.println("Passatger baixa al pis " + passatger.getPisDesitjat());
+        System.out.println("Passatger baixa al pis " + passatger.getPisDesitjat());
 
     }
 
     @Override
     public void activarMoviment() {
         int pisSeguent = nextFloor();
-        //System.out.println("Pis seguent: " + pisSeguent);
         ascensor.setPisActual(pisSeguent);
     }
 
